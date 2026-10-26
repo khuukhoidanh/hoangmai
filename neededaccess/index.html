@@ -1,157 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Applications — MIYO</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=3">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MIYO — Make It Yours. Hanoi × Kaohsiung 2026.">
+  <title>MIYO — Make It Yours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
-    <a class="home-link" href="../">MIYO <span aria-hidden="true">↗</span></a>
-    <div class="login-card">
-      <p class="language-eyebrow">MAKE IT YOURS · HANOI × KAOHSIUNG 2026</p>
-      <h1 id="loginTitle">Student access</h1>
-      <p>Enter the personal access code provided by your teacher.<br>Nhập mã truy cập được giáo viên cấp cho bạn.</p>
-      <form id="loginForm">
-        <label class="login-label" for="accessCode">Access code / Mã truy cập</label>
-        <input id="accessCode" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. danh2244" required>
-        <button class="btn login-submit" id="loginBtn" type="submit">Continue / Tiếp tục <span aria-hidden="true">↗</span></button>
-        <p class="login-message" id="loginMsg" role="alert" hidden></p>
-      </form>
-    </div>
-  </section>
-
-  <section class="language-screen" id="languageScreen" aria-labelledby="languageTitle" hidden>
-    <a class="home-link" href="../">MIYO <span aria-hidden="true">↗</span></a>
-    <div class="language-card">
-      <p class="language-eyebrow">MAKE IT YOURS · HANOI × KAOHSIUNG 2026</p>
-      <h1 id="languageTitle">Choose your language</h1>
-      <p>Please select a language to continue.</p>
-      <div class="language-options">
-        <button type="button" class="btn" data-language="vi">Tiếng Việt</button>
-        <button type="button" class="btn g" data-language="en">English</button>
+  <main class="page">
+    <div class="ruler" aria-hidden="true"></div>
+    <header>
+      <a class="brand" href="./" aria-label="MIYO home">MIYO</a>
+      <nav aria-label="Main navigation">
+        <a class="optional" href="#about">ABOUT</a>
+        <a href="#purpose">OUR PURPOSE</a>
+        <a class="optional" href="#event">THE EXCHANGE</a>
+      </nav>
+    </header>
+    <section class="hero" id="about">
+      <div class="copy">
+        <p class="kicker">MAKE IT YOURS&nbsp; · &nbsp;HANOI × KAOHSIUNG 2026</p>
+        <h1>A little closer,<br>across the distance.</h1>
+        <p class="description">Một dự án kết nối những người bạn Hà Nội và Cao Hùng. Chia sẻ một chút về chính bạn — để lần gặp lại trở nên thân quen hơn.</p>
+        <a class="cta" href="#purpose">
+          <span class="cta-copy"><small>GET TO KNOW MIYO</small><strong>Why we made this</strong></span>
+          <span class="cta-arrow" aria-hidden="true">
+            <svg class="cta-arrow-icon" viewBox="0 0 24 24" focusable="false">
+              <path d="M5 19 19 5M8 5h11v11" />
+            </svg>
+          </span>
+        </a>
       </div>
-    </div>
-  </section>
-
-  <!-- Thanh tiến trình -->
-  <div class="bar" hidden><i id="progress"></i></div>
-
-  <main class="wrap" hidden>
-    <div class="top">
-      <a class="question-brand" href="../">MIYO</a>
-      <span>Hanoi × Kaohsiung 2026</span>
-    </div>
-    <p class="stepno" id="stepLabel"></p>
-    <p class="validation-msg" id="validationMsg" role="alert" hidden></p>
-
-    <!-- Bước 0: Welcome -->
-    <section class="step on" data-step="0">
-      <h1><span>MAKE</span><span class="o">IT</span><span>YOURS.</span></h1>
-      <p class="lead">After our exchange in Hanoi, we’d love to know more about you before we meet again in Kaohsiung. It takes about 3 minutes.</p>
-    </section>
-
-    <!-- Bước 1: Who are you? -->
-    <section class="step" data-step="1">
-      <h2>Who are you?</h2>
-      <p class="lead">Tell us what to call you.</p>
-
-      <label class="f">Full name <small>(Please enter your real full name)</small>
-        <input type="text" id="fullName" autocomplete="name">
-      </label>
-      <label class="f">Your Nick Name <small>(Recommended: 5–12 characters)</small>
-        <input type="text" id="nick" autocomplete="nickname">
-      </label>
-
-      <!-- Role: nút chọn. Hai ô bên dưới chỉ hiện khi chọn đúng role -->
-      <div class="grp">
-        <b>Your role</b>
-        <div class="chips" id="roleChips"></div>
-      </div>
-      <label class="f" id="teacherBox" hidden>Your position
-        <input type="text" id="position" maxlength="60" placeholder="e.g., Homeroom teacher">
-      </label>
-      <label class="f" id="studentBox" hidden>Your grade / class
-        <input type="text" id="className" maxlength="40" placeholder="e.g., Grade 10 or 10A1">
-      </label>
-
-      <div class="grp">
-        <b>Zodiac sign</b>
-        <div class="chips" id="zodiacChips"></div>
+      <div class="globe-wrap" aria-hidden="true">
+        <svg class="globe" viewBox="0 0 700 700" role="presentation">
+          <defs><clipPath id="sphere"><circle cx="350" cy="350" r="292"/></clipPath><radialGradient id="glow" cx="60%" cy="72%"><stop offset="0" stop-color="#dce5f1" stop-opacity=".8"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+          <circle class="mesh" cx="350" cy="350" r="292"/>
+          <circle cx="350" cy="350" r="292" fill="url(#glow)"/>
+          <g clip-path="url(#sphere)">
+            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58"/><ellipse class="lat soft" cx="350" cy="350" rx="292" ry="130"/>
+            <ellipse class="lat" cx="350" cy="350" rx="292" ry="208"/><ellipse class="lat soft" cx="350" cy="350" rx="292" ry="264"/>
+            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58" transform="rotate(180 350 350)"/>
+            <ellipse class="long" cx="350" cy="350" rx="76" ry="292"/><ellipse class="long soft" cx="350" cy="350" rx="150" ry="292"/>
+            <ellipse class="long" cx="350" cy="350" rx="220" ry="292"/><path class="long" d="M350 58 C260 150 260 550 350 642 M350 58 C440 150 440 550 350 642"/>
+            <path class="lat soft" d="M70 245 Q350 325 630 245 M70 455 Q350 375 630 455"/>
+          </g>
+          <ellipse class="orbit" cx="350" cy="350" rx="330" ry="112" transform="rotate(-24 350 350)"/>
+          <ellipse class="orbit" cx="350" cy="350" rx="320" ry="180" transform="rotate(27 350 350)"/>
+        </svg>
+        <i class="sat one"></i><i class="sat two"></i><i class="sat three"></i><i class="sat four"></i>
+        <span class="annotation"><b>MIYO · 2026</b>MADE TO CONNECT</span>
       </div>
     </section>
-
-    <!-- Bước 2: Your favorites -->
-    <section class="step" data-step="2">
-      <h2>Your favorites</h2>
-      <p class="lead">Quick picks. There are no right or wrong answers.</p>
-
-      <div class="grp">
-        <b>Interests <small>choose up to 3</small></b>
-        <div class="chips" id="hobbiesChips"></div>
-        <input type="text" id="hobbyOther" placeholder="Other: anything else you love?" maxlength="40" hidden>
+    <section class="info" id="purpose">
+      <p class="info-label">01 / OUR PURPOSE</p>
+      <div class="info-copy">
+        <h2>Made to bring us closer.</h2>
+        <p>MIYO bắt đầu từ mong muốn để những người bạn Hà Nội và Cao Hùng hiểu nhau hơn trước khi gặp lại. Những câu chuyện, sở thích và lựa chọn nhỏ giúp cuộc gặp gỡ trở nên thân thiện, gần gũi và đáng nhớ hơn.</p>
       </div>
-
-      <div class="grp">
-        <b>The color that feels most like you</b>
-        <div class="sw" id="colors"></div>
+    </section>
+    <section class="info event-info" id="event">
+      <p class="info-label">02 / THE EXCHANGE</p>
+      <div class="info-copy">
+        <h2>Hanoi × Kaohsiung<br>2026.</h2>
+        <p>Đây là không gian giới thiệu dự án giao lưu và hành trình kết nối giữa hai thành phố. Một biểu mẫu riêng được chia sẻ trực tiếp với nhóm học sinh được mời tham gia; trang giới thiệu này không dẫn tới biểu mẫu đó.</p>
       </div>
-
-      <div class="grp">
-        <b>What kind of food would you like to try in Taiwan?</b>
-        <p class="hint tight">Choose up to 3</p>
-        <div class="chips" id="foodsChips"></div>
-        <input type="text" id="foodOther" placeholder="Other: what would you like to try?" maxlength="40" hidden>
-        <p class="hint" id="foodsCount">Selected: 0/3</p>
-      </div>
-
     </section>
-
-    <!-- Bước 3: Photo -->
-    <section class="step" data-step="3">
-      <h2>A photo of you</h2>
-      <p class="lead">A clear, well-lit photo looking straight at the camera.</p>
-
-      <label class="drop" id="drop" tabindex="0">
-        <span id="dropText">Tap to choose a photo</span>
-        <img id="preview" alt="Your selected photo" hidden>
-        <input type="file" id="photoInput" accept="image/*">
-      </label>
-      <label class="ck">
-        <input type="checkbox" id="consent">
-        <span>I agree to let the Trung Sơn team use and edit this photo. It will only be used internally.</span>
-      </label>
-      <p class="msg" id="photoMsg" hidden></p>
-    </section>
-
-    <!-- Bước 4: Review -->
-    <section class="step" data-step="4">
-      <h2>Review</h2>
-      <p class="lead">Does everything look right? You can edit any part.</p>
-      <div class="rev" id="review"></div>
-      <p class="msg" id="sendMsg" hidden></p>
-    </section>
-
-    <!-- Bước 5: Thank you -->
-    <section class="step" data-step="5">
-      <div class="ok" aria-hidden="true">✓</div>
-      <h2>Thank you.</h2>
-      <p class="lead">See you in Kaohsiung.</p>
-    </section>
+    <footer><span>MAKE IT YOURS</span><span>HANOI × KAOHSIUNG · 2026</span><span class="footer-credit">Developed by Khuu Khoi Danh</span></footer>
   </main>
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+        if (!target) return;
 
-  <!-- Thanh nút Back / Continue -->
-  <div class="nav" id="nav" hidden>
-    <div>
-      <button class="btn g" id="backBtn" hidden>Back</button>
-      <button class="btn" id="nextBtn">Start</button>
-    </div>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="script.js"></script>
+        event.preventDefault();
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    });
+  </script>
 </body>
 </html>
