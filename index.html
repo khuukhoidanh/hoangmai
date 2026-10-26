@@ -19,10 +19,41 @@
     </header>
 
     <section class="message" aria-labelledby="title">
-      <p class="eyebrow">MAKE IT YOURS · A PROJECT TO CONNECT</p>
-      <h1 id="title">A little closer,<br>across the distance.</h1>
-      <p class="status">Coming soon<span aria-hidden="true">.</span></p>
-      <p class="description">Một không gian kết nối Hà Nội và Cao Hùng đang được chuẩn bị.</p>
+      <div class="message-copy">
+        <p class="eyebrow">MAKE IT YOURS · A PROJECT TO CONNECT</p>
+        <h1 id="title">A little closer,<br>across the distance.</h1>
+        <p class="status">Coming soon<span aria-hidden="true">.</span></p>
+        <p class="description">Một không gian kết nối Hà Nội và Cao Hùng đang được chuẩn bị.</p>
+      </div>
+      <div class="globe-wrap" aria-hidden="true">
+        <svg class="globe" viewBox="0 0 700 700" role="presentation">
+          <defs>
+            <clipPath id="sphere"><circle cx="350" cy="350" r="292" /></clipPath>
+            <radialGradient id="glow" cx="60%" cy="72%">
+              <stop offset="0" stop-color="#dce5f1" stop-opacity=".8" />
+              <stop offset="1" stop-color="#fff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <circle class="mesh" cx="350" cy="350" r="292" />
+          <circle cx="350" cy="350" r="292" fill="url(#glow)" />
+          <g clip-path="url(#sphere)">
+            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58" />
+            <ellipse class="lat soft" cx="350" cy="350" rx="292" ry="130" />
+            <ellipse class="lat" cx="350" cy="350" rx="292" ry="208" />
+            <ellipse class="lat soft" cx="350" cy="350" rx="292" ry="264" />
+            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58" transform="rotate(180 350 350)" />
+            <ellipse class="long" cx="350" cy="350" rx="76" ry="292" />
+            <ellipse class="long soft" cx="350" cy="350" rx="150" ry="292" />
+            <ellipse class="long" cx="350" cy="350" rx="220" ry="292" />
+            <path class="long" d="M350 58 C260 150 260 550 350 642 M350 58 C440 150 440 550 350 642" />
+            <path class="lat soft" d="M70 245 Q350 325 630 245 M70 455 Q350 375 630 455" />
+          </g>
+          <ellipse class="orbit" cx="350" cy="350" rx="330" ry="112" transform="rotate(-24 350 350)" />
+          <ellipse class="orbit orbit-second" cx="350" cy="350" rx="320" ry="180" transform="rotate(27 350 350)" />
+        </svg>
+        <i class="sat one"></i><i class="sat two"></i><i class="sat three"></i><i class="sat four"></i>
+        <span class="annotation"><b>MIYO · 2026</b>MADE TO CONNECT</span>
+      </div>
     </section>
 
     <footer>
