@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="MIYO — Make It Yours. Hanoi × Kaohsiung 2026. Coming soon.">
-  <meta name="theme-color" content="#f1f1f0">
+  <meta name="theme-color" content="#f3f2ef">
   <title>MIYO — Coming Soon</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,51 +15,186 @@
   <main class="coming-soon">
     <header class="topline">
       <a class="brand" href="./" aria-label="MIYO home">MIYO</a>
-      <span>HANOI × KAOHSIUNG · 2026</span>
+      <div class="topline-place">
+        <span class="topline-label">AN ONGOING EXCHANGE</span>
+        <span class="topline-separator" aria-hidden="true">/</span>
+        <span>HANOI × KAOHSIUNG</span>
+      </div>
+      <div class="topline-meta"><span class="status-mark" aria-hidden="true"></span><span>IN THE MAKING</span><span class="topline-year">2026</span></div>
     </header>
 
     <section class="message" aria-labelledby="title">
       <div class="message-copy">
-        <p class="eyebrow">MAKE IT YOURS · A PROJECT TO CONNECT</p>
-        <h1 id="title">A little closer,<br>across the distance.</h1>
-        <p class="status">Coming soon<span aria-hidden="true">.</span></p>
+        <p class="eyebrow"><span class="eyebrow-index">01 — 02</span> MAKE IT YOURS</p>
+        <h1 id="title"><span>Coming</span><span class="title-accent">soon.</span></h1>
+        <p class="tagline">A little closer,<br>across the distance.</p>
         <p class="description">Một không gian kết nối Hà Nội và Cao Hùng đang được chuẩn bị.</p>
+        <div class="copy-footnote">
+          <span class="footnote-rule" aria-hidden="true"></span>
+          <span>BETWEEN TWO CITIES</span>
+          <span>HÀ NỘI · CAO HÙNG</span>
+        </div>
       </div>
-      <div class="globe-wrap" aria-hidden="true">
-        <svg class="globe" viewBox="0 0 700 700" role="presentation">
+      <figure class="globe-wrap" aria-labelledby="map-caption">
+        <svg class="globe" viewBox="0 0 700 700" role="img" aria-labelledby="globe-title globe-description">
+          <title id="globe-title">Hanoi and Kaohsiung connected across the globe</title>
+          <desc id="globe-description">A dotted world map with animated markers and a route between the two cities.</desc>
           <defs>
             <clipPath id="sphere"><circle cx="350" cy="350" r="292" /></clipPath>
-            <radialGradient id="glow" cx="60%" cy="72%">
-              <stop offset="0" stop-color="#dce5f1" stop-opacity=".8" />
-              <stop offset="1" stop-color="#fff" stop-opacity="0" />
+            <radialGradient id="globe-shade" cx="34%" cy="27%" r="76%">
+              <stop offset="0" stop-color="#fff" />
+              <stop offset=".64" stop-color="#fcfcfd" />
+              <stop offset=".9" stop-color="#f1f3f6" />
+              <stop offset="1" stop-color="#e1e5eb" />
             </radialGradient>
+            <pattern id="map-dots" width="6" height="6" patternUnits="userSpaceOnUse">
+              <circle cx="3" cy="3" r="1.35" fill="#202630" />
+            </pattern>
           </defs>
           <circle class="mesh" cx="350" cy="350" r="292" />
-          <circle cx="350" cy="350" r="292" fill="url(#glow)" />
           <g clip-path="url(#sphere)">
-            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58" />
-            <ellipse class="lat soft" cx="350" cy="350" rx="292" ry="130" />
-            <ellipse class="lat" cx="350" cy="350" rx="292" ry="208" />
-            <ellipse class="lat soft" cx="350" cy="350" rx="292" ry="264" />
-            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58" transform="rotate(180 350 350)" />
-            <ellipse class="long" cx="350" cy="350" rx="76" ry="292" />
-            <ellipse class="long soft" cx="350" cy="350" rx="150" ry="292" />
-            <ellipse class="long" cx="350" cy="350" rx="220" ry="292" />
-            <path class="long" d="M350 58 C260 150 260 550 350 642 M350 58 C440 150 440 550 350 642" />
-            <path class="lat soft" d="M70 245 Q350 325 630 245 M70 455 Q350 375 630 455" />
+            <g class="graticule">
+              <ellipse cx="350" cy="350" rx="288" ry="92" />
+              <ellipse cx="350" cy="350" rx="288" ry="190" />
+              <ellipse cx="350" cy="350" rx="104" ry="288" />
+              <ellipse cx="350" cy="350" rx="205" ry="288" />
+            </g>
+            <path class="landmass" d="M99 199 C106 181 119 166 137 158 C143 141 155 131 170 125 C178 109 196 103 214 111 C229 104 244 111 254 124 C270 126 282 137 285 151 C299 157 306 168 301 179 C293 187 281 190 270 195 C264 208 252 213 240 216 C231 229 217 238 201 239 C190 249 176 250 163 241 C149 250 136 246 126 234 C112 228 104 215 99 199Z" />
+            <path class="landmass" d="M215 239 C228 239 239 248 244 261 C252 265 259 274 261 286 C270 295 273 307 267 318 C270 329 275 340 269 351 C272 365 267 376 261 386 C262 401 254 413 250 425 C250 442 244 455 236 468 C234 486 227 501 220 515 C218 529 211 541 205 549 C197 538 196 524 201 511 C198 498 194 483 197 468 C188 455 185 441 190 427 C184 414 182 399 188 386 C180 373 180 358 187 345 C181 332 182 317 190 305 C186 293 191 280 201 270 C201 257 206 247 215 239Z" />
+            <path class="landmass" d="M315 174 C320 160 332 151 347 151 C355 140 369 136 381 143 C392 136 405 139 414 147 C425 141 437 144 445 153 C458 148 471 151 479 161 C492 156 505 160 513 169 C527 165 541 171 547 181 C562 182 573 192 578 203 C571 212 560 215 549 214 C540 224 527 227 515 224 C505 237 492 239 480 235 C468 246 455 247 443 241 C431 253 417 253 406 243 C393 250 380 246 371 236 C357 238 346 230 341 219 C328 216 320 207 321 195 C313 189 311 181 315 174Z" />
+            <path class="landmass" d="M418 240 C433 243 447 253 453 265 C466 269 478 280 479 291 C475 300 467 299 461 290 C453 287 447 279 441 271 C432 264 423 254 418 240Z" />
+            <path class="landmass" d="M362 228 C376 216 393 215 407 223 C421 228 430 240 430 255 C440 266 443 280 438 293 C445 306 445 321 439 334 C444 347 440 362 433 374 C430 390 421 405 411 418 C404 430 393 436 385 426 C381 410 374 397 370 383 C360 372 355 358 357 344 C348 331 345 316 350 302 C344 289 344 275 352 264 C349 249 353 237 362 228Z" />
+            <path class="landmass" d="M411 247 C425 244 439 251 446 263 C456 269 462 280 459 291 C454 302 444 304 435 297 C427 287 417 279 411 267 C407 260 407 253 411 247Z" />
+            <path class="landmass" d="M474 420 C487 411 504 411 517 418 C531 422 539 433 539 444 C531 454 519 459 507 457 C493 458 481 450 474 439 C470 432 470 425 474 420Z" />
+            <path class="landmass" d="M243 94 C252 84 265 82 276 88 C282 94 280 103 273 109 C261 111 250 106 243 94Z" />
+            <path class="landmass" d="M511 253 C516 250 521 254 521 260 C521 265 517 270 513 269 C509 265 508 258 511 253Z M548 254 C553 252 558 256 559 262 C558 268 554 272 550 270 C546 266 545 259 548 254Z M563 279 C568 277 572 281 572 286 C571 291 567 294 563 291 C560 288 560 283 563 279Z" />
           </g>
-          <ellipse class="orbit" cx="350" cy="350" rx="330" ry="112" transform="rotate(-24 350 350)" />
-          <ellipse class="orbit orbit-second" cx="350" cy="350" rx="320" ry="180" transform="rotate(27 350 350)" />
+          <g class="city-connection">
+            <path id="city-route-path" class="city-route" d="M470 289 Q490 242 515 265" />
+            <g class="city-marker hanoi">
+              <circle class="city-pulse" cx="470" cy="289" r="9" />
+              <circle class="city-dot" cx="470" cy="289" r="5" />
+              <circle class="city-core" cx="470" cy="289" r="1.8" />
+              <path class="city-leader" d="M466 285 L451 270 H420" />
+              <text class="city-label" x="418" y="267" text-anchor="end">
+                <tspan>HANOI</tspan><tspan class="city-coordinates" x="418" dy="12">21.03°N · 105.85°E</tspan>
+              </text>
+            </g>
+            <g class="city-marker kaohsiung">
+              <circle class="city-pulse" cx="515" cy="265" r="9" />
+              <circle class="city-dot" cx="515" cy="265" r="5" />
+              <circle class="city-core" cx="515" cy="265" r="1.8" />
+              <path class="city-leader" d="M519 261 L535 245 H563" />
+              <text class="city-label" x="565" y="242">
+                <tspan>KAOHSIUNG</tspan><tspan class="city-coordinates" x="565" dy="12">22.63°N · 120.30°E</tspan>
+              </text>
+            </g>
+          </g>
+          <g class="pointer-connection">
+            <path class="pointer-route" />
+            <circle class="pointer-ring" r="12" />
+            <circle class="pointer-core" r="3" />
+            <text class="pointer-caption" text-anchor="start">TO HANOI</text>
+          </g>
         </svg>
-        <i class="sat one"></i><i class="sat two"></i><i class="sat three"></i><i class="sat four"></i>
-        <span class="annotation"><b>MIYO · 2026</b>MADE TO CONNECT</span>
-      </div>
+        <i class="sat one" aria-hidden="true"></i><i class="sat two" aria-hidden="true"></i><i class="sat three" aria-hidden="true"></i><i class="sat four" aria-hidden="true"></i><i class="sat five" aria-hidden="true"></i><i class="sat six" aria-hidden="true"></i>
+        <figcaption class="annotation" id="map-caption"><b>FIG. 01</b><span>HANOI ↔ KAOHSIUNG</span></figcaption>
+      </figure>
     </section>
 
     <footer>
-      <span>MAKE IT YOURS</span>
-      <span>Developed by Khuu Khoi Danh</span>
+      <span class="footer-project">MAKE IT YOURS <i aria-hidden="true">®</i></span>
+      <span class="footer-place">HANOI × KAOHSIUNG <span>·</span> 2026</span>
+      <span class="footer-credit">DEVELOPED BY KHUU KHOI DANH</span>
     </footer>
   </main>
+  <script>
+    const globeWrap = document.querySelector(".globe-wrap");
+    const messageCopy = document.querySelector(".message-copy");
+    const satellites = globeWrap ? globeWrap.querySelectorAll(".sat") : [];
+    const pointerRoute = globeWrap && globeWrap.querySelector(".pointer-route");
+    const pointerRing = globeWrap && globeWrap.querySelector(".pointer-ring");
+    const pointerCore = globeWrap && globeWrap.querySelector(".pointer-core");
+    const pointerCaption = globeWrap && globeWrap.querySelector(".pointer-caption");
+    const cityTargets = [
+      { name: "HANOI", x: 470, y: 289, element: globeWrap && globeWrap.querySelector(".hanoi") },
+      { name: "KAOHSIUNG", x: 515, y: 265, element: globeWrap && globeWrap.querySelector(".kaohsiung") }
+    ];
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (globeWrap && !reduceMotion) {
+      let queuedPointer = null;
+      let pointerFrame = 0;
+
+      const updatePointerConnection = () => {
+        pointerFrame = 0;
+        if (!queuedPointer) return;
+
+        const bounds = globeWrap.getBoundingClientRect();
+        const x = Math.max(14, Math.min(686, ((queuedPointer.x - bounds.left) / bounds.width) * 700));
+        const y = Math.max(14, Math.min(686, ((queuedPointer.y - bounds.top) / bounds.height) * 700));
+        const target = cityTargets.reduce((nearest, city) => {
+          const distance = (city.x - x) ** 2 + (city.y - y) ** 2;
+          return distance < nearest.distance ? { city, distance } : nearest;
+        }, { city: cityTargets[0], distance: Infinity }).city;
+        const controlX = (target.x + x) / 2;
+        const controlY = (target.y + y) / 2 - 24;
+
+        pointerRoute.setAttribute("d", `M${target.x} ${target.y} Q${controlX} ${controlY} ${x} ${y}`);
+        pointerRing.setAttribute("cx", x);
+        pointerRing.setAttribute("cy", y);
+        pointerCore.setAttribute("cx", x);
+        pointerCore.setAttribute("cy", y);
+        pointerCaption.setAttribute("x", x > 560 ? x - 14 : x + 14);
+        pointerCaption.setAttribute("y", Math.max(26, y - 15));
+        pointerCaption.setAttribute("text-anchor", x > 560 ? "end" : "start");
+        pointerCaption.textContent = `TO ${target.name}`;
+        cityTargets.forEach((city) => city.element.classList.toggle("is-target", city === target));
+      };
+
+      globeWrap.addEventListener("pointermove", (event) => {
+        if (event.pointerType === "touch") return;
+
+        const bounds = globeWrap.getBoundingClientRect();
+        const x = (event.clientX - bounds.left) / bounds.width;
+        const y = (event.clientY - bounds.top) / bounds.height;
+        const dx = (x - .5) * 2;
+        const dy = (y - .5) * 2;
+        queuedPointer = { x: event.clientX, y: event.clientY };
+        if (!pointerFrame) pointerFrame = window.requestAnimationFrame(updatePointerConnection);
+
+        globeWrap.classList.add("is-pointer-active");
+        globeWrap.style.setProperty("--pointer-x", `${x * 100}%`);
+        globeWrap.style.setProperty("--pointer-y", `${y * 100}%`);
+        globeWrap.style.setProperty("--tilt-x", `${dy * -8}deg`);
+        globeWrap.style.setProperty("--tilt-y", `${dx * 8}deg`);
+        messageCopy.style.setProperty("--copy-shift-x", `${dx * -5}px`);
+        messageCopy.style.setProperty("--copy-shift-y", `${dy * -4}px`);
+
+        satellites.forEach((satellite, index) => {
+          const depth = index + 2;
+          satellite.style.setProperty("--sat-shift-x", `${dx * depth * 2}px`);
+          satellite.style.setProperty("--sat-shift-y", `${dy * depth * 2}px`);
+        });
+      });
+
+      globeWrap.addEventListener("pointerleave", () => {
+        globeWrap.classList.remove("is-pointer-active");
+        if (pointerFrame) window.cancelAnimationFrame(pointerFrame);
+        pointerFrame = 0;
+        queuedPointer = null;
+        cityTargets.forEach((city) => city.element.classList.remove("is-target"));
+        ["--pointer-x", "--pointer-y", "--tilt-x", "--tilt-y"].forEach((property) => {
+          globeWrap.style.removeProperty(property);
+        });
+        messageCopy.style.removeProperty("--copy-shift-x");
+        messageCopy.style.removeProperty("--copy-shift-y");
+        satellites.forEach((satellite) => {
+          satellite.style.removeProperty("--sat-shift-x");
+          satellite.style.removeProperty("--sat-shift-y");
+        });
+      });
+    }
+  </script>
 </body>
 </html>
