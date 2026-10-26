@@ -43,16 +43,16 @@ $(function () {
       $("#allergyOther").attr("placeholder", "Khác: vui lòng mô tả");
       $("#dislikeOther").attr("placeholder", "Khác: món nào?");
       $("#colors").next("p").text("Không thấy màu phù hợp? Chạm vào vòng màu để chọn màu bất kỳ.");
-      $("#foodsCount").text("Đã chọn: 0/3");
+      $("#foodsCount").text("Đã chọn: " + data.foods.length + "/3");
       $(".chips .chip").each(function () { $(this).text(tr($(this).data("value"))); });
     }
     $("#languageScreen, .language-screen").prop("hidden", true);
     $(".bar, .wrap, #nav").prop("hidden", false);
-    showStep(0);
+    showStep(currentStudent && currentStudent.response ? REVIEW_STEP : 0);
   });
 
   /* ---------- 1. CÀI ĐẶT ---------- */
-  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_QqTsjP9CDyBLXFHlkv3BKQ-BE7Jy7wCV35KCwaa2y6bLZBR5Ln1jHzEswCGbxXrX/exec";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxzAR-4nI8SGfW_iDEfB79aAMWfGXQudU2ado-NpCdNIYLUGZFy-X5YNtkveEtaRUS/exec";
   var REVIEW_STEP = 4;    // bước xem lại
   var SUCCESS_STEP = 5;   // bước cảm ơn
 
@@ -67,14 +67,15 @@ $(function () {
 
   /* ---------- 3. CÂU TRẢ LỜI CỦA NGƯỜI DÙNG ---------- */
   var data = {
-    fullName: "", nick: "",
+    loginCode: "", fullName: "", nick: "",
     role: "", position: "", className: "",
     zodiac: "",
     hobbies: [], hobbyOther: "",
     color: "",
     foods: [], foodOther: "",
-    photo: "", consent: false
+    photo: "", photoUrl: "", consent: false
   };
+  var currentStudent = null;
   var currentStep = 0;
   var sending = false;
 
@@ -98,6 +99,7 @@ $(function () {
     $.each(list, function (i, text) {
       $("<button>", { type: "button", "class": "chip", text: tr(text), "aria-pressed": "false" }).data("value", text)
         .on("click", function () {
+          if (key === "role" && currentStudent) { return; }
           var value = $(this).data("value");
           data[key] = (data[key] === value) ? "" : value;   // bấm lại để bỏ chọn
           $box.children().each(function () {
@@ -180,10 +182,96 @@ $(function () {
   $("<p>", { "class": "hint", text: "Don’t see your color? Tap the rainbow circle to pick any color you like." })
     .insertAfter($colors);
 
+  function applyStudentProfile(student) {
+    currentStudent = student;
+    var saved = student.response || {};
+    data.loginCode = student.code;
+    data.fullName = student.fullName;
+    data.nick = saved.nick || "";
+    data.role = student.role || "Student";
+    data.position = saved.position || student.position || "";
+    data.className = saved.className || student.className || "";
+    data.zodiac = saved.zodiac || "";
+    data.hobbies = Array.isArray(saved.hobbies) ? saved.hobbies.slice() : [];
+    data.hobbyOther = saved.hobbyOther || "";
+    data.color = saved.color || "";
+    data.foods = Array.isArray(saved.foods) ? saved.foods.slice() : [];
+    data.foodOther = saved.foodOther || "";
+    data.photo = "";
+    data.photoUrl = student.photoUrl || saved.photoUrl || "";
+    data.consent = saved.consent === true;
+
+    $("#fullName").val(data.fullName).prop("readonly", true);
+    $("#nick").val(data.nick);
+    $("#className").val(data.className);
+    $("#position").val(data.position);
+    $("#roleChips .chip").each(function () {
+      var selected = $(this).data("value") === data.role;
+      $(this).attr("aria-pressed", selected ? "true" : "false").prop("hidden", !selected);
+    });
+    $("#teacherBox").prop("hidden", data.role !== "Teacher");
+    $("#studentBox").prop("hidden", data.role !== "Student");
+    $("#zodiacChips .chip").each(function () {
+      $(this).attr("aria-pressed", $(this).data("value") === data.zodiac ? "true" : "false");
+    });
+    [["hobbiesChips", data.hobbies], ["foodsChips", data.foods]].forEach(function (entry) {
+      $("#" + entry[0] + " .chip").each(function () {
+        $(this).attr("aria-pressed", entry[1].indexOf($(this).data("value")) > -1 ? "true" : "false");
+      });
+    });
+    $("#hobbyOther").val(data.hobbyOther).prop("hidden", data.hobbies.indexOf("Other") < 0);
+    $("#foodOther").val(data.foodOther).prop("hidden", data.foods.indexOf("Other") < 0);
+    $("#foodsCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.foods.length + "/3");
+    $colors.find("button").each(function () {
+      $(this).attr("aria-pressed", $(this).data("color") === data.color ? "true" : "false");
+    });
+    if (data.color && OPTIONS.colors.indexOf(data.color) < 0) {
+      $("#customColor").val(data.color).addClass("set");
+    } else {
+      $("#customColor").removeClass("set");
+    }
+    $("#consent").prop("checked", data.consent);
+    if (data.photoUrl) {
+      $("#preview").attr("src", data.photoUrl).prop("hidden", false);
+      $("#dropText").hide();
+    } else {
+      $("#preview").attr("src", "").prop("hidden", true);
+      $("#dropText").show();
+    }
+    refreshNext();
+  }
+
+  $("#loginForm").on("submit", function (event) {
+    event.preventDefault();
+    var code = $.trim($("#accessCode").val()).toLowerCase();
+    if (!code) { return; }
+    $("#loginMsg").prop("hidden", true);
+    $("#loginBtn").prop("disabled", true).text("Checking… / Đang kiểm tra…");
+    $.ajax({
+      url: SCRIPT_URL,
+      method: "POST",
+      data: JSON.stringify({ action: "login", code: code }),
+      contentType: "text/plain;charset=utf-8",
+      dataType: "json"
+    }).done(function (res) {
+      if (res && res.ok && res.student) {
+        applyStudentProfile(res.student);
+        $("#loginScreen").prop("hidden", true);
+        $("#languageScreen").prop("hidden", false);
+      } else {
+        $("#loginMsg").text("Mã không hợp lệ. Vui lòng kiểm tra lại với giáo viên. / Invalid code. Please check with your teacher.").prop("hidden", false);
+      }
+    }).fail(function () {
+      $("#loginMsg").text("Không thể kết nối. Vui lòng thử lại. / Connection failed. Please try again.").prop("hidden", false);
+    }).always(function () {
+      $("#loginBtn").prop("disabled", false).html("Continue / Tiếp tục <span aria-hidden='true'>↗</span>");
+    });
+  });
+
   /* ---------- 6. Ô NHẬP CHỮ, ẢNH, ĐỒNG Ý ---------- */
 
   // Mọi ô chữ có id trùng tên với data (fullName, nick, position, className, ...Other)
-  $("input[type=text]").on("input", function () {
+  $(".wrap input[type=text]").on("input", function () {
     data[this.id] = $.trim(this.value);
     refreshNext();
   });
@@ -236,7 +324,7 @@ $(function () {
                data.color &&
                finalList("foods", "foodOther").length > 0;
       case 3:
-        return data.photo && data.consent;
+        return (data.photo || data.photoUrl) && data.consent;
       case REVIEW_STEP:
         return !sending;
       default:
@@ -261,7 +349,7 @@ $(function () {
   }
 
   $(document).on("click change", ".chip, #colors button, #customColor, #photoInput, #consent", clearValidationHighlights);
-  $("input[type=text]").on("input", clearValidationHighlights);
+  $(".wrap input[type=text]").on("input", clearValidationHighlights);
 
   function highlightMissing(shouldFocus) {
     if (shouldFocus === undefined) shouldFocus = true;
@@ -291,7 +379,7 @@ $(function () {
       if (!data.color) mark("#colors");
       if (!finalList("foods", "foodOther").length) mark("#foodsChips");
     } else if (currentStep === 3) {
-      if (!data.photo) mark("#drop");
+      if (!data.photo && !data.photoUrl) mark("#drop");
       if (!data.consent) mark(".ck");
     }
     if (shouldFocus && $firstMissing.length) {
@@ -324,8 +412,8 @@ $(function () {
   /* ---------- 8. MÀN REVIEW ---------- */
   function buildReview() {
     var $review = $("#review").empty();
-    if (data.photo) {
-      $("<img>", { src: data.photo, alt: "Your photo" }).appendTo($review);
+    if (data.photo || data.photoUrl) {
+      $("<img>", { src: data.photo || data.photoUrl, alt: "Your photo" }).appendTo($review);
     }
 
     var rows = [
@@ -388,8 +476,9 @@ $(function () {
     $("#nextBtn").text("Sending…");
     refreshNext();
 
-    resizePhoto(function (photo) {
+    function sendSubmission(photo) {
       var row = {
+        code:      data.loginCode,
         fullName:  data.fullName,
         nick:      data.nick,
         role:      data.role,
@@ -415,7 +504,10 @@ $(function () {
         else { sendFailed(); }
       })
       .fail(sendFailed);
-    }, sendFailed);
+    }
+
+    if (data.photo) { resizePhoto(sendSubmission, sendFailed); }
+    else { sendSubmission(""); }
   }
 
   /* ---------- 10. BẮT ĐẦU ---------- */

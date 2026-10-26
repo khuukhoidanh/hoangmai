@@ -1,0 +1,107 @@
+:root {
+  color-scheme: light;
+  --paper: #f1f1f0;
+  --ink: #080808;
+  --muted: #656565;
+  --line: #c9c9c7;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 500 15px/1.5 "DM Sans", Arial, sans-serif;
+}
+
+.coming-soon {
+  display: flex;
+  width: min(calc(100% - 9vw), 1740px);
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: auto;
+  flex-direction: column;
+}
+
+.topline,
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.topline {
+  min-height: 82px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.brand {
+  color: var(--ink);
+  font: 700 clamp(25px, 3vw, 39px)/1 "Space Grotesk", sans-serif;
+  letter-spacing: -.09em;
+  text-decoration: none;
+}
+
+.message {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 0;
+}
+
+.eyebrow {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+h1 {
+  max-width: 900px;
+  margin: 0;
+  font: 600 clamp(42px, 7vw, 100px)/.98 "Space Grotesk", sans-serif;
+  letter-spacing: -.07em;
+}
+
+.status {
+  margin: 32px 0 0;
+  font: 600 clamp(24px, 3vw, 38px)/1.1 "Space Grotesk", sans-serif;
+  letter-spacing: -.045em;
+}
+
+.status span { color: var(--muted); }
+
+.description {
+  max-width: 480px;
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
+footer {
+  min-height: 58px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+
+@media (max-width: 600px) {
+  .coming-soon { width: calc(100% - 36px); }
+  .topline { min-height: 64px; font-size: 9px; }
+  .message { padding: 48px 0; }
+  .eyebrow { font-size: 9px; letter-spacing: .12em; }
+  h1 { font-size: clamp(40px, 11vw, 64px); }
+  .status { margin-top: 26px; }
+  footer { min-height: 48px; gap: 12px; font-size: 8px; }
+}

@@ -3,13 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Questions — MIYO</title>
+  <title>Applications — MIYO</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
-  <section class="language-screen" id="languageScreen" aria-labelledby="languageTitle">
+  <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
+    <a class="home-link" href="../">MIYO <span aria-hidden="true">↗</span></a>
+    <div class="login-card">
+      <p class="language-eyebrow">MAKE IT YOURS · HANOI × KAOHSIUNG 2026</p>
+      <h1 id="loginTitle">Student access</h1>
+      <p>Enter the personal access code provided by your teacher.<br>Nhập mã truy cập được giáo viên cấp cho bạn.</p>
+      <form id="loginForm">
+        <label class="login-label" for="accessCode">Access code / Mã truy cập</label>
+        <input id="accessCode" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. danh2244" required>
+        <button class="btn login-submit" id="loginBtn" type="submit">Continue / Tiếp tục <span aria-hidden="true">↗</span></button>
+        <p class="login-message" id="loginMsg" role="alert" hidden></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="language-screen" id="languageScreen" aria-labelledby="languageTitle" hidden>
     <a class="home-link" href="../">MIYO <span aria-hidden="true">↗</span></a>
     <div class="language-card">
       <p class="language-eyebrow">MAKE IT YOURS · HANOI × KAOHSIUNG 2026</p>
