@@ -17,18 +17,17 @@
       <a class="brand" href="./" aria-label="MIYO home">MIYO</a>
       <nav aria-label="Main navigation">
         <a class="optional" href="#about">ABOUT</a>
-        <a href="questions/">QUESTIONS</a>
-        <a class="optional" href="#event">HANOI × KAOHSIUNG</a>
-        <a class="contact" href="questions/">JOIN US</a>
+        <a href="#purpose">OUR PURPOSE</a>
+        <a class="optional" href="#event">THE EXCHANGE</a>
       </nav>
     </header>
     <section class="hero" id="about">
       <div class="copy">
-        <p class="kicker" id="event">MAKE IT YOURS&nbsp; · &nbsp;HANOI × KAOHSIUNG 2026</p>
+        <p class="kicker">MAKE IT YOURS&nbsp; · &nbsp;HANOI × KAOHSIUNG 2026</p>
         <h1>A little closer,<br>across the distance.</h1>
         <p class="description">Một dự án kết nối những người bạn Hà Nội và Cao Hùng. Chia sẻ một chút về chính bạn — để lần gặp lại trở nên thân quen hơn.</p>
-        <a class="cta" href="questions/">
-          <span class="cta-copy"><small>START HERE · 03 MIN</small><strong>Tell us about you</strong></span>
+        <a class="cta" href="#purpose">
+          <span class="cta-copy"><small>GET TO KNOW MIYO</small><strong>Why we made this</strong></span>
           <span class="cta-arrow" aria-hidden="true">
             <svg class="cta-arrow-icon" viewBox="0 0 24 24" focusable="false">
               <path d="M5 19 19 5M8 5h11v11" />
@@ -56,7 +55,33 @@
         <span class="annotation"><b>MIYO · 2026</b>MADE TO CONNECT</span>
       </div>
     </section>
-    <footer><span>MAKE IT YOURS</span><span>HANOI × KAOHSIUNG · 2026</span></footer>
+    <section class="info" id="purpose">
+      <p class="info-label">01 / OUR PURPOSE</p>
+      <div class="info-copy">
+        <h2>Made to bring us closer.</h2>
+        <p>MIYO bắt đầu từ mong muốn để những người bạn Hà Nội và Cao Hùng hiểu nhau hơn trước khi gặp lại. Những câu chuyện, sở thích và lựa chọn nhỏ giúp cuộc gặp gỡ trở nên thân thiện, gần gũi và đáng nhớ hơn.</p>
+      </div>
+    </section>
+    <section class="info event-info" id="event">
+      <p class="info-label">02 / THE EXCHANGE</p>
+      <div class="info-copy">
+        <h2>Hanoi × Kaohsiung<br>2026.</h2>
+        <p>Đây là không gian giới thiệu dự án giao lưu và hành trình kết nối giữa hai thành phố. Một biểu mẫu riêng được chia sẻ trực tiếp với nhóm học sinh được mời tham gia; trang giới thiệu này không dẫn tới biểu mẫu đó.</p>
+      </div>
+    </section>
+    <footer><span>MAKE IT YOURS</span><span>HANOI × KAOHSIUNG · 2026</span><span class="footer-credit">Developed by Khuu Khoi Danh</span></footer>
   </main>
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+        if (!target) return;
+
+        event.preventDefault();
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    });
+  </script>
 </body>
 </html>
