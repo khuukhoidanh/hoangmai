@@ -1,141 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Make It Yours.</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Make It Yours — dự án giao lưu Hà Nội × Cao Hùng 2026.">
+  <title>MIYO — Make It Yours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: light; --bg:#f3f4f1; --ink:#12171f; --muted:#6b717b; --blue:#2a3cff; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--ink); font:17px/1.6 "DM Sans",system-ui,sans-serif; }
+    main { width:min(100% - 40px, 960px); min-height:100vh; margin:auto; display:flex; flex-direction:column; }
+    header { padding:28px 0; border-bottom:1px solid #d5d8d2; font-weight:800; letter-spacing:.04em; }
+    .hero { flex:1; display:flex; flex-direction:column; justify-content:center; padding:72px 0; }
+    .eyebrow { color:var(--blue); font-size:13px; font-weight:700; letter-spacing:.12em; }
+    h1 { max-width:800px; margin:16px 0; font:800 clamp(56px,12vw,120px)/.9 "Bricolage Grotesque",sans-serif; letter-spacing:-.06em; }
+    h1 span { color:var(--blue); }
+    .intro { max-width:560px; color:var(--muted); font-size:clamp(18px,3vw,22px); }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+    .button { display:inline-block; padding:14px 22px; border:2px solid var(--ink); border-radius:12px; background:var(--ink); color:white; font-weight:700; text-decoration:none; }
+    .button.secondary { background:transparent; color:var(--ink); }
+    footer { padding:20px 0; border-top:1px solid #d5d8d2; color:var(--muted); font-size:14px; }
+  </style>
 </head>
 <body>
-
-  <section class="language-screen" id="languageScreen" aria-labelledby="languageTitle">
-    <div class="language-card">
-      <p class="language-eyebrow">MAKE IT YOURS · HANOI × KAOHSIUNG 2026</p>
-      <h1 id="languageTitle">Choose your language</h1>
-      <p>Please select a language to continue.</p>
-      <div class="language-options">
-        <button type="button" class="btn" data-language="vi">Tiếng Việt</button>
-        <button type="button" class="btn g" data-language="en">English</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Thanh tiến trình -->
-  <div class="bar" hidden><i id="progress"></i></div>
-
-  <main class="wrap" hidden>
-    <div class="top">
-      <b>Make It Yours.</b>
-      <span>Hanoi × Kaohsiung 2026</span>
-    </div>
-    <p class="stepno" id="stepLabel"></p>
-    <p class="validation-msg" id="validationMsg" role="alert" hidden></p>
-
-    <!-- Bước 0: Welcome -->
-    <section class="step on" data-step="0">
-      <h1><span>MAKE</span><span class="o">IT</span><span>YOURS.</span></h1>
-      <p class="lead">After our exchange in Hanoi, we’d love to know more about you before we meet again in Kaohsiung. It takes about 3 minutes.</p>
-    </section>
-
-    <!-- Bước 1: Who are you? -->
-    <section class="step" data-step="1">
-      <h2>Who are you?</h2>
-      <p class="lead">Tell us what to call you.</p>
-
-      <label class="f">Full name <small>(Please enter your real full name)</small>
-        <input type="text" id="fullName" autocomplete="name">
-      </label>
-      <label class="f">Your Nick Name <small>(Recommended: 5–12 characters)</small>
-        <input type="text" id="nick" autocomplete="nickname">
-      </label>
-
-      <!-- Role: nút chọn. Hai ô bên dưới chỉ hiện khi chọn đúng role -->
-      <div class="grp">
-        <b>Your role</b>
-        <div class="chips" id="roleChips"></div>
-      </div>
-      <label class="f" id="teacherBox" hidden>Your position
-        <input type="text" id="position" maxlength="60" placeholder="e.g., Homeroom teacher">
-      </label>
-      <label class="f" id="studentBox" hidden>Your grade / class
-        <input type="text" id="className" maxlength="40" placeholder="e.g., Grade 10 or 10A1">
-      </label>
-
-      <div class="grp">
-        <b>Zodiac sign</b>
-        <div class="chips" id="zodiacChips"></div>
+  <main>
+    <header>MIYO · MAKE IT YOURS</header>
+    <section class="hero" aria-labelledby="title">
+      <p class="eyebrow">HANOI × KAOHSIUNG · 2026</p>
+      <h1 id="title">MAKE<br><span>IT</span> YOURS.</h1>
+      <p class="intro">Một dự án kết nối những người bạn Hà Nội và Cao Hùng. Cùng chia sẻ đôi điều về bản thân để chúng ta hiểu nhau hơn trước ngày gặp lại.</p>
+      <div class="actions">
+        <a class="button" href="questions/">Điền thông tin / Questions</a>
+        <a class="button secondary" href="questions/">Make It Yours</a>
       </div>
     </section>
-
-    <!-- Bước 2: Your favorites -->
-    <section class="step" data-step="2">
-      <h2>Your favorites</h2>
-      <p class="lead">Quick picks. There are no right or wrong answers.</p>
-
-      <div class="grp">
-        <b>Interests <small>choose up to 3</small></b>
-        <div class="chips" id="hobbiesChips"></div>
-        <input type="text" id="hobbyOther" placeholder="Other: anything else you love?" maxlength="40" hidden>
-      </div>
-
-      <div class="grp">
-        <b>The color that feels most like you</b>
-        <div class="sw" id="colors"></div>
-      </div>
-
-      <div class="grp">
-        <b>What kind of food would you like to try in Taiwan?</b>
-        <p class="hint tight">Choose up to 3</p>
-        <div class="chips" id="foodsChips"></div>
-        <input type="text" id="foodOther" placeholder="Other: what would you like to try?" maxlength="40" hidden>
-        <p class="hint" id="foodsCount">Selected: 0/3</p>
-      </div>
-
-    </section>
-
-    <!-- Bước 3: Photo -->
-    <section class="step" data-step="3">
-      <h2>A photo of you</h2>
-      <p class="lead">A clear, well-lit photo looking straight at the camera.</p>
-
-      <label class="drop" id="drop" tabindex="0">
-        <span id="dropText">Tap to choose a photo</span>
-        <img id="preview" alt="Your selected photo" hidden>
-        <input type="file" id="photoInput" accept="image/*">
-      </label>
-      <label class="ck">
-        <input type="checkbox" id="consent">
-        <span>I agree to let the Trung Sơn team use and edit this photo. It will only be used internally.</span>
-      </label>
-      <p class="msg" id="photoMsg" hidden></p>
-    </section>
-
-    <!-- Bước 4: Review -->
-    <section class="step" data-step="4">
-      <h2>Review</h2>
-      <p class="lead">Does everything look right? You can edit any part.</p>
-      <div class="rev" id="review"></div>
-      <p class="msg" id="sendMsg" hidden></p>
-    </section>
-
-    <!-- Bước 5: Thank you -->
-    <section class="step" data-step="5">
-      <div class="ok" aria-hidden="true">✓</div>
-      <h2>Thank you.</h2>
-      <p class="lead">See you in Kaohsiung.</p>
-    </section>
+    <footer>MAKE IT YOURS · HANOI × KAOHSIUNG 2026</footer>
   </main>
-
-  <!-- Thanh nút Back / Continue -->
-  <div class="nav" id="nav" hidden>
-    <div>
-      <button class="btn g" id="backBtn" hidden>Back</button>
-      <button class="btn" id="nextBtn">Start</button>
-    </div>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>
