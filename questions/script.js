@@ -295,7 +295,8 @@ $(function () {
       if (!data.consent) mark(".ck");
     }
     if (shouldFocus && $firstMissing.length) {
-      $("html, body").animate({ scrollTop: Math.max(0, $firstMissing.offset().top - 100) }, 250);
+      var $scroll = $(".wrap");
+      $scroll.stop().animate({ scrollTop: Math.max(0, $scroll.scrollTop() + $firstMissing.offset().top - 100) }, 250);
       if ($firstMissing.is("input")) $firstMissing.trigger("focus");
     }
   }
@@ -310,7 +311,7 @@ $(function () {
     $("#nextBtn").text(tr(n === 0 ? "Start" : n === REVIEW_STEP ? "Submit" : "Continue"));
     if (n === REVIEW_STEP) { buildReview(); }
     refreshNext();
-    window.scrollTo(0, 0);
+    $(".wrap").scrollTop(0);
   }
 
   $("#nextBtn").on("click", function () {
