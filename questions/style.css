@@ -20,7 +20,7 @@ button, input { font:inherit; color:inherit; }
 
 .bar { position:fixed; top:0; right:0; left:0; height:4px; z-index:5; background:var(--line); }
 .bar i { display:block; width:0; height:100%; background:var(--ink); transition:width .35s ease; }
-.wrap { width:min(100% - 40px, 860px); height:calc(100vh - 4px); height:calc(100svh - 4px); min-height:0; margin:4px auto 0; padding:0 0 100px; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+.wrap { width:100%; max-width:none; height:calc(100vh - 4px); height:calc(100svh - 4px); min-height:0; margin:4px 0 0; padding:0 clamp(20px,5vw,80px) 100px; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
 .top { min-height:82px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 20px; border-bottom:1px solid var(--line); color:var(--muted); font-size:12px; letter-spacing:.07em; text-transform:uppercase; }
 .question-brand { color:var(--ink); font:700 27px/1 "Space Grotesk",sans-serif; letter-spacing:-.09em; text-decoration:none; }
 .question-brand:hover,.home-link:hover { text-decoration:underline; text-underline-offset:4px; }
@@ -36,10 +36,10 @@ h1 span { display:block; }
 h1 .o { -webkit-text-stroke:1.5px var(--ink); color:transparent; }
 h2 { margin:0 0 12px; font-size:clamp(40px,8vw,64px); line-height:.98; }
 .lead { max-width:58ch; margin:0 0 34px; color:var(--muted); font-size:17px; }
-.step[data-step="0"].on { min-height:calc(100svh - 240px); display:flex; flex-direction:column; justify-content:center; }
+.step[data-step="0"].on { min-height:calc(100svh - 240px); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
 body:has(.step[data-step="5"].on) .wrap { padding-bottom:24px; }
-.step[data-step="0"] h1 { font-size:clamp(72px,18vw,164px); margin-bottom:26px; }
-.step[data-step="0"] h1 .o { padding-left:.45em; }
+.step[data-step="0"] h1 { width:100%; margin:0 0 28px; font-size:clamp(72px,15vw,150px); line-height:.78; letter-spacing:-.085em; }
+.step[data-step="0"] h1 .o { padding-left:0; color:transparent; -webkit-text-stroke:1.5px var(--ink); transform:scale(.82); }
 .step[data-step="0"] .lead { max-width:48ch; font-size:19px; }
 
 label.f { display:block; margin:0 0 23px; font-weight:700; }
@@ -80,8 +80,8 @@ input[type="text"]:focus { outline:0; border-color:var(--ink); box-shadow:0 0 0 
 .invalid-label { color:var(--error)!important; }
 .msg { margin-top:14px; color:var(--error); font-weight:600; }
 .ok { display:grid; width:72px; height:72px; place-items:center; margin:24px 0; border-radius:50%; background:var(--ink); color:white; font-size:38px; }
-.nav { position:fixed; right:0; bottom:0; left:0; z-index:4; padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); background:rgba(241,241,240,.94); backdrop-filter:blur(12px); }
-.nav>div { display:flex; width:min(100%,820px); gap:10px; margin:0 auto; }
+.nav { position:fixed; right:0; bottom:0; left:0; z-index:4; padding:14px clamp(20px,5vw,80px) calc(14px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); background:rgba(241,241,240,.94); backdrop-filter:blur(12px); }
+.nav>div { display:flex; width:100%; gap:10px; margin:0 auto; }
 .btn { min-height:50px; flex:1; padding:12px 18px; border:1px solid var(--ink); border-radius:0; background:var(--ink); color:white; font-weight:700; cursor:pointer; transition:transform .15s,opacity .2s,background .2s,color .2s; }
 .btn:not(:disabled):hover { transform:translateY(-1px); }
 .btn.g { flex:0 0 auto; background:transparent; color:var(--ink); }
@@ -99,12 +99,11 @@ input[type="text"]:focus { outline:0; border-color:var(--ink); box-shadow:0 0 0 
 .language-options .btn.g { flex:0 1 150px; }
 
 @media (min-width:800px) {
-  .wrap { width:min(100% - 80px,860px); }
   .step { padding-top:36px; }
   .step[data-step="0"].on { min-height:calc(100svh - 260px); }
 }
 @media (max-width:520px) {
-  .wrap { width:calc(100% - 36px); padding-bottom:100px; }
+  .wrap { width:100%; padding-right:18px; padding-bottom:100px; padding-left:18px; }
   .top { min-height:70px; font-size:10px; }
   .question-brand { font-size:24px; }
   .step { padding-top:24px; }
