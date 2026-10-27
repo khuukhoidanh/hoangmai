@@ -2,6 +2,15 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
+  document.querySelectorAll("a[data-scroll-target]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const target = document.querySelector(link.getAttribute("href"));
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+    });
+  });
+
   if ("IntersectionObserver" in window && !reduceMotion) {
     document.documentElement.classList.add("js-ready");
     const revealItems = document.querySelectorAll(".section-label, .intro-grid > *, .story-grid > *, .experience-grid > *, .faq-grid > *, .privacy-grid > *, .contact-main, .contact-aside");

@@ -1,7 +1,7 @@
 /* ==========================================================
    script.js - toàn bộ logic của trang (viết bằng jQuery).
    Muốn đổi danh sách lựa chọn: sửa phần "2. DANH SÁCH LỰA CHỌN".
-   Muốn đổi đường dẫn gửi dữ liệu: sửa SCRIPT_URL ở phần 1.
+   Đường dẫn gửi dữ liệu được đặt chung trong ../shared/miyo-config.js.
    ========================================================== */
 $(function () {
 
@@ -9,13 +9,13 @@ $(function () {
   var translations = {
     "Make It Yours.": "Dành riêng cho bạn.", "After our exchange in Hanoi, we’d love to know more about you before we meet again in Kaohsiung. It takes about 3 minutes.": "Sau chuyến giao lưu tại Hà Nội, chúng tôi muốn hiểu thêm về bạn trước khi gặp lại ở Cao Hùng. Bạn sẽ mất khoảng 3 phút.", "Who are you?": "Bạn là ai?", "Tell us what to call you.": "Hãy cho chúng tôi biết nên gọi bạn là gì.",
     "Full name": "Họ và tên", "(Please enter your real full name)": "(vui lòng nhập họ và tên thật)", "Your Nick Name": "Biệt danh", "(Recommended: 5–12 characters)": "(khuyến khích 5–12 ký tự)", "Your role": "Vai trò của bạn", "Your position": "Chức vụ", "Your grade / class": "Khối / lớp của bạn", "Zodiac sign": "Cung hoàng đạo",
-    "Please complete the highlighted required fields before continuing.": "Vui lòng hoàn thành các mục bắt buộc được tô nổi bật để tiếp tục.",
+    "Please complete the highlighted required fields before continuing.": "Vui lòng hoàn thành các mục bắt buộc được tô nổi bật để tiếp tục.", "Couldn’t submit. Check your connection and press Submit again. Your answers are still here.": "Chưa thể gửi. Hãy kiểm tra kết nối rồi nhấn Gửi lại. Câu trả lời của bạn vẫn được giữ lại.", "Sending…": "Đang gửi…",
     "Your favorites": "Những điều bạn yêu thích", "Quick picks. There are no right or wrong answers.": "Chọn nhanh nhé. Không có câu trả lời đúng hay sai.", "Interests": "Sở thích", "choose up to 3": "chọn tối đa 3", "Other: anything else you love?": "Khác: bạn còn yêu thích điều gì?", "The color that feels most like you": "Màu sắc thể hiện con người bạn", "What kind of food would you like to try in Taiwan?": "Bạn muốn thử món gì ở Đài Loan?", "Choose up to 3": "Chọn tối đa 3", "Other: what would you like to try?": "Khác: bạn muốn thử món gì?", "Selected: 0/3": "Đã chọn: 0/3", "Visual style you like": "Phong cách hình ảnh bạn thích",
     "Things to avoid": "Những điều cần tránh", "So we can plan a comfortable trip for you. Skip anything that doesn’t apply.": "Để chúng tôi chuẩn bị chuyến đi thoải mái cho bạn. Có thể bỏ qua mục không phù hợp.", "Allergies or dietary needs": "Dị ứng hoặc chế độ ăn", "Other: please describe": "Khác: vui lòng mô tả", "Foods you don’t like": "Những món bạn không thích", "Other: which foods?": "Khác: món nào?", "Places or activities you’d rather skip": "Địa điểm hoặc hoạt động bạn muốn tránh", "Other: where or what?": "Khác: địa điểm hoặc hoạt động nào?",
     "A photo of you": "Ảnh của bạn", "A clear, well-lit photo looking straight at the camera.": "Ảnh rõ nét, đủ sáng, nhìn thẳng vào máy ảnh.", "Tap to choose a photo": "Chạm để chọn ảnh", "Your selected photo": "Ảnh bạn đã chọn", "I agree to let the Trung Sơn team use and edit this photo. It will only be used internally.": "Tôi đồng ý để nhóm Trung Sơn sử dụng và chỉnh sửa ảnh này. Ảnh chỉ được sử dụng nội bộ.",
     "Review": "Xem lại", "Does everything look right? You can edit any part.": "Mọi thông tin đã chính xác chưa? Bạn có thể chỉnh sửa bất kỳ mục nào.", "Thank you.": "Cảm ơn bạn.", "See you in Kaohsiung.": "Hẹn gặp bạn tại Cao Hùng.", "Back": "Quay lại", "Start": "Bắt đầu", "Continue": "Tiếp tục", "Submit": "Gửi", "Step": "Bước",
     "Teacher": "Giáo viên", "Interpreter": "Phiên dịch viên", "Student": "Học sinh", "Other": "Khác", "Minimal": "Tối giản", "Clean, lots of space": "Gọn gàng, thoáng đãng", "Vibrant": "Rực rỡ", "Bold, high-contrast color": "Màu sắc nổi bật, tương phản cao", "Nostalgic": "Hoài niệm", "Warm tones, like old film": "Tông ấm như phim cũ", "Dreamy": "Mơ màng", "Soft, light, pastel": "Nhẹ nhàng, tông pastel",
-    "Role": "Vai trò", "Position": "Chức vụ", "Class": "Lớp", "Favorite color": "Màu yêu thích", "Style": "Phong cách", "Food to try in Taiwan": "Món muốn thử ở Đài Loan", "Allergies / dietary needs": "Dị ứng / chế độ ăn", "Foods you dislike": "Món không thích", "Places to skip": "Địa điểm muốn tránh", "Not provided": "Chưa cung cấp", "None": "Không có", "Edit details": "Chỉnh sửa thông tin", "Change photo": "Đổi ảnh",
+    "Role": "Vai trò", "Position": "Chức vụ", "Class": "Lớp", "Favorite color": "Màu yêu thích", "Style": "Phong cách", "Food to try in Taiwan": "Món muốn thử ở Đài Loan", "Allergies / dietary needs": "Dị ứng / chế độ ăn", "Foods you dislike": "Món không thích", "Places to skip": "Địa điểm muốn tránh", "Not provided": "Chưa cung cấp", "None": "Không có", "Edit details": "Chỉnh sửa thông tin", "Edit favorites": "Sửa sở thích", "Change photo": "Đổi ảnh",
     "Aries": "Bạch Dương", "Taurus": "Kim Ngưu", "Gemini": "Song Tử", "Cancer": "Cự Giải", "Leo": "Sư Tử", "Virgo": "Xử Nữ", "Libra": "Thiên Bình", "Scorpio": "Bọ Cạp", "Sagittarius": "Nhân Mã", "Capricorn": "Ma Kết", "Aquarius": "Bảo Bình", "Pisces": "Song Ngư",
     "Music": "Âm nhạc", "Drawing": "Vẽ", "Reading": "Đọc sách", "Gaming": "Chơi trò chơi", "Sports": "Thể thao", "Photography": "Nhiếp ảnh", "Cooking": "Nấu ăn", "Travel": "Du lịch", "Movies": "Xem phim", "Dancing": "Nhảy", "Tech": "Công nghệ", "Fashion": "Thời trang",
     "Hot Pot": "Lẩu", "BBQ / Grilled Meat": "Thịt nướng", "Noodles": "Mì", "Rice Dishes": "Các món cơm", "Dumplings": "Bánh bao / há cảo", "Fried Chicken": "Gà rán", "Sushi": "Sushi", "Curry": "Cà ri", "Taiwanese Street Food": "Ẩm thực đường phố Đài Loan", "Western Food": "Món Âu", "Desserts": "Món tráng miệng", "Bubble Tea": "Trà sữa"
@@ -35,6 +35,11 @@ $(function () {
       $("#languageTitle").text("Chọn ngôn ngữ");
       $(".language-card > p:not(.language-eyebrow)").text("Vui lòng chọn ngôn ngữ để tiếp tục.");
       $(".language-eyebrow").text("MAKE IT YOURS · HÀ NỘI × CAO HÙNG 2026");
+      $("#roleChips").attr("aria-label", "Vai trò của bạn");
+      $("#zodiacChips").attr("aria-label", "Cung hoàng đạo");
+      $("#hobbiesChips").attr("aria-label", "Sở thích");
+      $("#colors").attr("aria-label", "Màu yêu thích");
+      $("#foodsChips").attr("aria-label", "Món muốn thử ở Đài Loan");
       $("#position").attr("placeholder", "Ví dụ: Giáo viên chủ nhiệm");
       $("#className").attr("placeholder", "Ví dụ: Khối 10 hoặc 10A1");
       $("#dropText").text("Chạm để chọn ảnh");
@@ -43,6 +48,7 @@ $(function () {
       $("#allergyOther").attr("placeholder", "Khác: vui lòng mô tả");
       $("#dislikeOther").attr("placeholder", "Khác: món nào?");
       $("#colors").next("p").text("Không thấy màu phù hợp? Chạm vào vòng màu để chọn màu bất kỳ.");
+      $("#hobbiesCount").text("Đã chọn: " + data.hobbies.length + "/3");
       $("#foodsCount").text("Đã chọn: " + data.foods.length + "/3");
       $(".chips .chip").each(function () { $(this).text(tr($(this).data("value"))); });
     }
@@ -52,7 +58,7 @@ $(function () {
   });
 
   /* ---------- 1. CÀI ĐẶT ---------- */
-  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxzAR-4nI8SGfW_iDEfB79aAMWfGXQudU2ado-NpCdNIYLUGZFy-X5YNtkveEtaRUS/exec";
+  var SCRIPT_URL = window.MIYO_CONFIG.scriptUrl;
   var REVIEW_STEP = 4;    // bước xem lại
   var SUCCESS_STEP = 5;   // bước cảm ơn
 
@@ -73,11 +79,12 @@ $(function () {
     hobbies: [], hobbyOther: "",
     color: "",
     foods: [], foodOther: "",
-    photo: "", photoUrl: "", consent: false
+    photo: "", photoUrl: "", photoPreview: "", consent: false
   };
   var currentStudent = null;
   var currentStep = 0;
   var sending = false;
+  var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- 4. HÀM TIỆN ÍCH ---------- */
 
@@ -99,7 +106,6 @@ $(function () {
     $.each(list, function (i, text) {
       $("<button>", { type: "button", "class": "chip", text: tr(text), "aria-pressed": "false" }).data("value", text)
         .on("click", function () {
-          if (key === "role" && currentStudent) { return; }
           var value = $(this).data("value");
           data[key] = (data[key] === value) ? "" : value;   // bấm lại để bỏ chọn
           $box.children().each(function () {
@@ -183,23 +189,23 @@ $(function () {
     .insertAfter($colors);
 
   function applyStudentProfile(student) {
-    currentStudent = student;
-    var saved = student.response || {};
+    var saved = student.response || null;
+    currentStudent = { code: student.code, response: saved };
     data.loginCode = student.code;
-    data.fullName = student.fullName;
-    data.nick = saved.nick || "";
-    data.role = student.role || "Student";
-    data.position = saved.position || student.position || "";
-    data.className = saved.className || student.className || "";
-    data.zodiac = saved.zodiac || "";
-    data.hobbies = Array.isArray(saved.hobbies) ? saved.hobbies.slice() : [];
-    data.hobbyOther = saved.hobbyOther || "";
-    data.color = saved.color || "";
-    data.foods = Array.isArray(saved.foods) ? saved.foods.slice() : [];
-    data.foodOther = saved.foodOther || "";
+    data.fullName = "";
+    data.nick = "";
+    data.role = "";
+    data.position = "";
+    data.className = "";
+    data.zodiac = "";
+    data.hobbies = [];
+    data.hobbyOther = "";
+    data.color = "";
+    data.foods = [];
+    data.foodOther = "";
     data.photo = "";
-    data.photoUrl = student.photoUrl || saved.photoUrl || "";
-    data.consent = saved.consent === true;
+    data.photoUrl = "";
+    data.consent = false;
 
     $("#fullName").val(data.fullName).prop("readonly", true);
     $("#nick").val(data.nick);
@@ -221,6 +227,7 @@ $(function () {
     });
     $("#hobbyOther").val(data.hobbyOther).prop("hidden", data.hobbies.indexOf("Other") < 0);
     $("#foodOther").val(data.foodOther).prop("hidden", data.foods.indexOf("Other") < 0);
+    $("#hobbiesCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.hobbies.length + "/3");
     $("#foodsCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.foods.length + "/3");
     $colors.find("button").each(function () {
       $(this).attr("aria-pressed", $(this).data("color") === data.color ? "true" : "false");
@@ -238,6 +245,72 @@ $(function () {
       $("#preview").attr("src", "").prop("hidden", true);
       $("#dropText").show();
     }
+    // StudentCodes only validates the access code; every response field starts blank.
+    data.fullName = data.nick = data.role = data.position = data.className = "";
+    data.zodiac = data.color = data.hobbyOther = data.foodOther = "";
+    data.hobbies = [];
+    data.foods = [];
+    data.photo = data.photoUrl = data.photoPreview = "";
+    data.consent = false;
+    $("#fullName, #nick, #className, #position, #hobbyOther, #foodOther")
+      .val("").prop("readonly", false);
+    $("#roleChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip, .sw button")
+      .attr("aria-pressed", "false").prop("hidden", false);
+    $("#teacherBox, #studentBox, #hobbyOther, #foodOther").prop("hidden", true);
+    $("#hobbiesCount, #foodsCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + "0/3");
+    $("#customColor").val("#2a3cff").removeClass("set");
+    $("#consent").prop("checked", false);
+    $("#photoInput").val("");
+    $("#preview").attr("src", "").prop("hidden", true);
+    $("#dropText").show();
+
+    if (saved) {
+      data.fullName = saved.fullName || "";
+      data.nick = saved.nick || "";
+      data.role = saved.role || "";
+      data.position = saved.position || "";
+      data.className = saved.className || "";
+      data.zodiac = saved.zodiac || "";
+      data.hobbies = Array.isArray(saved.hobbies) ? saved.hobbies.slice() : [];
+      data.hobbyOther = saved.hobbyOther || "";
+      data.color = saved.color || "";
+      data.foods = Array.isArray(saved.foods) ? saved.foods.slice() : [];
+      data.foodOther = saved.foodOther || "";
+      data.photoUrl = saved.photoUrl || "";
+      data.photoPreview = saved.photoDataUrl || "";
+      data.consent = saved.consent === true;
+
+      $("#fullName").val(data.fullName);
+      $("#nick").val(data.nick);
+      $("#className").val(data.className);
+      $("#position").val(data.position);
+      $("#roleChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip").each(function () {
+        var key = $(this).closest("#roleChips").length ? "role" :
+          $(this).closest("#zodiacChips").length ? "zodiac" :
+          $(this).closest("#hobbiesChips").length ? "hobbies" : "foods";
+        var selected = key === "role" || key === "zodiac"
+          ? data[key] === $(this).data("value")
+          : data[key].indexOf($(this).data("value")) !== -1;
+        $(this).attr("aria-pressed", selected ? "true" : "false").prop("hidden", false);
+      });
+      $("#teacherBox").prop("hidden", data.role !== "Teacher");
+      $("#studentBox").prop("hidden", data.role !== "Student");
+      $("#hobbyOther").val(data.hobbyOther).prop("hidden", data.hobbies.indexOf("Other") === -1);
+      $("#foodOther").val(data.foodOther).prop("hidden", data.foods.indexOf("Other") === -1);
+      $("#hobbiesCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.hobbies.length + "/3");
+      $("#foodsCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.foods.length + "/3");
+      $colors.find("button").each(function () {
+        $(this).attr("aria-pressed", $(this).data("color") === data.color ? "true" : "false");
+      });
+      if (data.color && OPTIONS.colors.indexOf(data.color) === -1) {
+        $("#customColor").val(data.color).addClass("set");
+      }
+      $("#consent").prop("checked", data.consent);
+      if (data.photoPreview || data.photoUrl) {
+        $("#preview").attr("src", data.photoPreview || data.photoUrl).prop("hidden", false);
+        $("#dropText").hide();
+      }
+    }
     refreshNext();
   }
 
@@ -246,25 +319,27 @@ $(function () {
     var code = $.trim($("#accessCode").val()).toLowerCase();
     if (!code) { return; }
     $("#loginMsg").prop("hidden", true);
-    $("#loginBtn").prop("disabled", true).text("Checking… / Đang kiểm tra…");
+    $("#loginBtn").prop("disabled", true).attr("aria-busy", "true").text("Checking… / Đang kiểm tra…");
     $.ajax({
       url: SCRIPT_URL,
       method: "POST",
       data: JSON.stringify({ action: "login", code: code }),
       contentType: "text/plain;charset=utf-8",
-      dataType: "json"
+      dataType: "json",
+      timeout: 30000
     }).done(function (res) {
       if (res && res.ok && res.student) {
         applyStudentProfile(res.student);
         $("#loginScreen").prop("hidden", true);
         $("#languageScreen").prop("hidden", false);
       } else {
-        $("#loginMsg").text("Mã không hợp lệ. Vui lòng kiểm tra lại với giáo viên. / Invalid code. Please check with your teacher.").prop("hidden", false);
+        var loginError = res && res.error;
+        $("#loginMsg").text(loginError || "Mã không hợp lệ. Vui lòng kiểm tra lại với giáo viên. / Invalid code. Please check with your teacher.").prop("hidden", false);
       }
     }).fail(function () {
       $("#loginMsg").text("Không thể kết nối. Vui lòng thử lại. / Connection failed. Please try again.").prop("hidden", false);
     }).always(function () {
-      $("#loginBtn").prop("disabled", false).html("Continue / Tiếp tục <span aria-hidden='true'>↗</span>");
+      $("#loginBtn").prop("disabled", false).attr("aria-busy", "false").html("Continue / Tiếp tục <span aria-hidden='true'>↗</span>");
     });
   });
 
@@ -339,7 +414,8 @@ $(function () {
   var validationShown = false;
 
   function clearValidationHighlights() {
-    $(".invalid-label").removeClass("invalid-label");
+    $(".invalid-label").removeClass("invalid-label").removeAttr("aria-invalid");
+    $("[aria-invalid='true']").removeAttr("aria-invalid");
     if (validationShown && !isValid(currentStep)) {
       highlightMissing(false);
     } else {
@@ -361,10 +437,14 @@ $(function () {
       $(selector).each(function () {
         var $item = $(this);
         if (!$firstMissing.length) $firstMissing = $item;
-        if ($item.is("input")) $item.closest("label").addClass("invalid-label");
+        if ($item.is("input")) $item.attr("aria-invalid", "true").closest("label").addClass("invalid-label");
+        if ($item.is("#drop")) $item.attr("aria-invalid", "true");
         var $group = $item.closest(".grp");
-        if ($group.length) $group.children("b").addClass("invalid-label");
-        if ($item.hasClass("ck")) $item.addClass("invalid-label");
+        if ($group.length) {
+          $group.children("b").addClass("invalid-label");
+          $item.attr("aria-invalid", "true");
+        }
+        if ($item.hasClass("ck")) $item.addClass("invalid-label").attr("aria-invalid", "true");
       });
     }
     if (currentStep === 1) {
@@ -375,17 +455,29 @@ $(function () {
       if (data.role === "Student" && !data.className) mark("#className");
       if (!data.zodiac) mark("#zodiacChips");
     } else if (currentStep === 2) {
-      if (!finalList("hobbies", "hobbyOther").length) mark("#hobbiesChips");
+      if (!finalList("hobbies", "hobbyOther").length) {
+        mark(data.hobbies.indexOf("Other") > -1 ? "#hobbyOther" : "#hobbiesChips");
+      }
       if (!data.color) mark("#colors");
-      if (!finalList("foods", "foodOther").length) mark("#foodsChips");
+      if (!finalList("foods", "foodOther").length) {
+        mark(data.foods.indexOf("Other") > -1 ? "#foodOther" : "#foodsChips");
+      }
     } else if (currentStep === 3) {
       if (!data.photo && !data.photoUrl) mark("#drop");
       if (!data.consent) mark(".ck");
     }
     if (shouldFocus && $firstMissing.length) {
-      var $scroll = $(".wrap");
-      $scroll.stop().animate({ scrollTop: Math.max(0, $scroll.scrollTop() + $firstMissing.offset().top - 100) }, 250);
-      if ($firstMissing.is("input")) $firstMissing.trigger("focus");
+      var focusTarget = $firstMissing;
+      if ($firstMissing.is(".grp") || $firstMissing.is("#roleChips, #zodiacChips, #hobbiesChips, #foodsChips, #colors")) {
+        focusTarget = $firstMissing.find("button").first();
+      } else if ($firstMissing.is(".ck")) {
+        focusTarget = $firstMissing.find("input").first();
+      }
+      var focusElement = focusTarget.get(0);
+      if (focusElement) {
+        focusElement.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "center" });
+        if (typeof focusElement.focus === "function") focusElement.focus({ preventScroll: true });
+      }
     }
   }
 
@@ -394,12 +486,14 @@ $(function () {
     $(".step").removeClass("on").filter("[data-step='" + n + "']").addClass("on");
     $("#progress").css("width", (n / SUCCESS_STEP * 100) + "%");
     $("#stepLabel").text(n > 0 && n < SUCCESS_STEP ? tr("Step") + " " + n + "/" + REVIEW_STEP : "");
+    $(".bar").attr("aria-valuenow", Math.min(n, SUCCESS_STEP));
     $("#backBtn").prop("hidden", n === 0 || n === SUCCESS_STEP);
     $("#nav").prop("hidden", n === SUCCESS_STEP);
     $("#nextBtn").text(tr(n === 0 ? "Start" : n === REVIEW_STEP ? "Submit" : "Continue"));
+    $("#nextBtn").attr("aria-busy", "false");
     if (n === REVIEW_STEP) { buildReview(); }
     refreshNext();
-    $(".wrap").scrollTop(0);
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
   }
 
   $("#nextBtn").on("click", function () {
@@ -412,8 +506,8 @@ $(function () {
   /* ---------- 8. MÀN REVIEW ---------- */
   function buildReview() {
     var $review = $("#review").empty();
-    if (data.photo || data.photoUrl) {
-      $("<img>", { src: data.photo || data.photoUrl, alt: "Your photo" }).appendTo($review);
+    if (data.photo || data.photoPreview || data.photoUrl) {
+      $("<img>", { src: data.photo || data.photoPreview || data.photoUrl, alt: "Your photo" }).appendTo($review);
     }
 
     var rows = [
@@ -441,6 +535,8 @@ $(function () {
 
     $("<button>", { type: "button", "class": "e", text: tr("Edit details") })
       .on("click", function () { showStep(1); }).appendTo($review);
+    $("<button>", { type: "button", "class": "e", text: tr("Edit favorites") })
+      .on("click", function () { showStep(2); }).appendTo($review);
     $("<button>", { type: "button", "class": "e", text: tr("Change photo") })
       .on("click", function () { showStep(3); }).appendTo($review);
   }
@@ -451,29 +547,54 @@ $(function () {
   function resizePhoto(onDone, onError) {
     var img = new Image();
     img.onload = function () {
-      var scale = Math.min(1, 1400 / Math.max(img.width, img.height));
-      var canvas = document.createElement("canvas");
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
-      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-      onDone(canvas.toDataURL("image/jpeg", 0.88));
+      try {
+        var scale = Math.min(1, 1400 / Math.max(img.width, img.height));
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        var context = canvas.getContext("2d");
+        if (!context) throw new Error("Photo could not be prepared.");
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        onDone(canvas.toDataURL("image/jpeg", 0.88));
+      } catch (error) {
+        onError(error);
+      }
     };
     img.onerror = onError;
     img.src = data.photo;
   }
 
-  function sendFailed() {
+  function sendFailed(error) {
+    var errorMessage = "";
+    if (typeof error === "string") {
+      errorMessage = error;
+    } else if (error && error.responseJSON) {
+      var responseError = error.responseJSON.error;
+      errorMessage = typeof responseError === "string" ? responseError :
+        responseError && (responseError.message || responseError.error) || "";
+    } else if (error && error.responseText) {
+      try {
+        var response = JSON.parse(error.responseText);
+        var responseError = response && response.error;
+        errorMessage = typeof responseError === "string" ? responseError :
+          responseError && (responseError.message || responseError.error) || "";
+      } catch (parseError) {
+        errorMessage = "";
+      }
+    } else if (error && typeof error.message === "string") {
+      errorMessage = error.message;
+    }
     sending = false;
-    $("#nextBtn").text("Submit");
+    $("#nextBtn").text(tr("Submit")).attr("aria-busy", "false");
     refreshNext();
-    showMessage("#sendMsg", "Couldn’t submit. Check your connection and press Submit again. Your answers are still here.");
+    showMessage("#sendMsg", errorMessage || tr("Couldn’t submit. Check your connection and press Submit again. Your answers are still here."));
   }
 
   function submitForm() {
     if (sending) { return; }
     sending = true;
     $("#sendMsg").prop("hidden", true);
-    $("#nextBtn").text("Sending…");
+    $("#nextBtn").text(tr("Sending…")).attr("aria-busy", "true");
     refreshNext();
 
     function sendSubmission(photo) {
@@ -489,7 +610,8 @@ $(function () {
         color:     data.color,
         foods:     finalList("foods", "foodOther"),
         consent:   data.consent,
-        photo:     photo
+        photo:     photo,
+        photoUrl:  data.photoUrl
       };
 
       $.ajax({
@@ -497,11 +619,12 @@ $(function () {
         method: "POST",
         data: JSON.stringify(row),
         contentType: "text/plain;charset=utf-8",   // để trình duyệt không chặn (không cần preflight)
-        dataType: "json"
+        dataType: "json",
+        timeout: 30000
       })
       .done(function (res) {
         if (res && res.ok) { sending = false; showStep(SUCCESS_STEP); }
-        else { sendFailed(); }
+        else { sendFailed(res && res.error ? res.error : "Couldn’t submit. Check your connection and try again."); }
       })
       .fail(sendFailed);
     }

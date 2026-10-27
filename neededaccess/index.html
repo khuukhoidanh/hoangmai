@@ -1,86 +1,37 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="MIYO — Make It Yours. Hanoi × Kaohsiung 2026.">
-  <title>MIYO — Make It Yours</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="MIYO is coming soon.">
+  <title>Coming Soon — MIYO</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="gate.css">
 </head>
 <body>
-  <main class="page">
-    <div class="ruler" aria-hidden="true"></div>
-    <header>
-      <a class="brand" href="./" aria-label="MIYO home">MIYO</a>
-      <nav aria-label="Main navigation">
-        <a href="#purpose">OUR PURPOSE</a>
-        <a class="optional" href="#event">THE EXCHANGE</a>
-      </nav>
-    </header>
-    <section class="hero" id="about">
-      <div class="copy">
-        <p class="kicker">MAKE IT YOURS&nbsp; · &nbsp;HANOI × KAOHSIUNG 2026</p>
-        <h1>A little closer,<br>across the distance.</h1>
-        <p class="description">Một dự án kết nối những người bạn Hà Nội và Cao Hùng. Chia sẻ một chút về chính bạn — để lần gặp lại trở nên thân quen hơn.</p>
-        <a class="cta" href="#purpose">
-          <span class="cta-copy"><small>GET TO KNOW MIYO</small><strong>Why we made this</strong></span>
-          <span class="cta-arrow" aria-hidden="true">
-            <svg class="cta-arrow-icon" viewBox="0 0 24 24" focusable="false">
-              <path d="M5 19 19 5M8 5h11v11" />
-            </svg>
-          </span>
-        </a>
-      </div>
-      <div class="globe-wrap" aria-hidden="true">
-        <svg class="globe" viewBox="0 0 700 700" role="presentation">
-          <defs><clipPath id="sphere"><circle cx="350" cy="350" r="292"/></clipPath><radialGradient id="glow" cx="60%" cy="72%"><stop offset="0" stop-color="#dce5f1" stop-opacity=".8"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
-          <circle class="mesh" cx="350" cy="350" r="292"/>
-          <circle cx="350" cy="350" r="292" fill="url(#glow)"/>
-          <g clip-path="url(#sphere)">
-            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58"/><ellipse class="lat soft" cx="350" cy="350" rx="292" ry="130"/>
-            <ellipse class="lat" cx="350" cy="350" rx="292" ry="208"/><ellipse class="lat soft" cx="350" cy="350" rx="292" ry="264"/>
-            <ellipse class="lat" cx="350" cy="350" rx="292" ry="58" transform="rotate(180 350 350)"/>
-            <ellipse class="long" cx="350" cy="350" rx="76" ry="292"/><ellipse class="long soft" cx="350" cy="350" rx="150" ry="292"/>
-            <ellipse class="long" cx="350" cy="350" rx="220" ry="292"/><path class="long" d="M350 58 C260 150 260 550 350 642 M350 58 C440 150 440 550 350 642"/>
-            <path class="lat soft" d="M70 245 Q350 325 630 245 M70 455 Q350 375 630 455"/>
-          </g>
-          <ellipse class="orbit" cx="350" cy="350" rx="330" ry="112" transform="rotate(-24 350 350)"/>
-          <ellipse class="orbit" cx="350" cy="350" rx="320" ry="180" transform="rotate(27 350 350)"/>
-        </svg>
-        <i class="sat one"></i><i class="sat two"></i><i class="sat three"></i><i class="sat four"></i>
-        <span class="annotation"><b>MIYO · 2026</b>MADE TO CONNECT</span>
+  <main class="gate">
+    <header class="topline"><a class="brand" href="../" aria-label="MIYO home">MIYO<span>.</span></a><p><i aria-hidden="true"></i> A LITTLE CLOSER, SOON</p></header>
+    <section class="message" aria-labelledby="title">
+      <div class="message-copy">
+        <p class="eyebrow"><span class="eyebrow-index">06 — KEEP IN TOUCH</span><span class="eyebrow-contact">CONTACT</span></p>
+        <p class="kicker">TWO CITIES, STILL IN THE MAKING</p>
+        <h1 id="title">More, <em>soon.</em></h1>
+        <p class="description">For questions about participating, please reach out to the teacher coordinating your exchange. A project email or other public contact will be added once verified.</p>
+        <button class="admin-toggle" id="adminToggle" type="button" aria-expanded="false" aria-controls="adminPanel">Admin access <span aria-hidden="true">↗</span></button>
+        <a class="return-link" href="../"><span aria-hidden="true">←</span> Return</a>
+        <form class="admin-panel" id="adminForm" hidden>
+          <label for="adminCode">Admin code</label>
+          <div class="password-row"><div class="password-field"><input id="adminCode" type="password" autocomplete="off" required><button class="visibility-toggle" id="toggleCodeVisibility" type="button" aria-label="Show admin code" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.7"/><path class="eye-slash" d="m4 4 16 16"/></svg></button></div><button type="submit" id="adminSubmit">Enter <span aria-hidden="true">↗</span></button></div>
+          <p class="message-error" id="adminMessage" role="alert" hidden></p>
+        </form>
       </div>
     </section>
-    <section class="info" id="purpose">
-      <p class="info-label">01 / OUR PURPOSE</p>
-      <div class="info-copy">
-        <h2>Made to bring us closer.</h2>
-        <p>MIYO bắt đầu từ mong muốn để những người bạn Hà Nội và Cao Hùng hiểu nhau hơn trước khi gặp lại. Những câu chuyện, sở thích và lựa chọn nhỏ giúp cuộc gặp gỡ trở nên thân thiện, gần gũi và đáng nhớ hơn.</p>
-      </div>
-    </section>
-    <section class="info event-info" id="event">
-      <p class="info-label">02 / THE EXCHANGE</p>
-      <div class="info-copy">
-        <h2>Hanoi × Kaohsiung<br>2026.</h2>
-        <p>Đây là không gian giới thiệu dự án giao lưu và hành trình kết nối giữa hai thành phố. Một biểu mẫu riêng được chia sẻ trực tiếp với nhóm học sinh được mời tham gia; trang giới thiệu này không dẫn tới biểu mẫu đó.</p>
-      </div>
-    </section>
-    <footer><span>MAKE IT YOURS</span><span>HANOI × KAOHSIUNG · 2026</span><span class="footer-credit">Developed by Khuu Khoi Danh</span></footer>
+    <footer><span>MAKE IT YOURS</span><span>MIYO — AN EXCHANGE IN MOTION</span></footer>
   </main>
-  <script>
-    document.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener("click", (event) => {
-        const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
-        if (!target) return;
-
-        event.preventDefault();
-        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
-      });
-    });
-  </script>
+  <script src="../shared/miyo-config.js" defer></script>
+  <script src="gate.js" defer></script>
 </body>
 </html>
