@@ -32,10 +32,17 @@ function doPost(e) {
     if (data && data.action === "adminLogin") {
       return verifyAdminCode(data.code);
     }
+    if (data && data.action === "reportError") {
+      return reportSystemError(data.error || {});
+    }
     if (data && data.action === "login") {
       return verifyStudentCode(data.code);
     }
-    validateSubmission(data);
+    try {
+      validateSubmission(data);
+    } catch (validationError) {
+      return jsonResponse({ ok: false, type: "USER_INPUT", error: validationError.message || "Please check the required fields." });
+    }
     lock.waitLock(30000);
     if (!isActiveStudentCode(data.code)) {
       return jsonResponse({ ok: false, error: "This student code is invalid or inactive." });
@@ -83,6 +90,65 @@ function doPost(e) {
   }
 }
 
+// Accept only technical diagnostics from the browser; never include form/student data.
+function reportSystemError(error) {
+  try {
+    var code = String(error.code || "ERR-" + Utilities.getUuid().slice(0, 8).toUpperCase()).slice(0, 32);
+    var page = String(error.page || "unknown").slice(0, 160);
+    var action = String(error.action || "unknown").slice(0, 60);
+    var message = String(error.message || "Unspecified system error").slice(0, 500);
+    var stack = String(error.stack || "").slice(0, 1500);
+    var userAgent = String(error.userAgent || "").slice(0, 300);
+    var status = String(error.status || "").slice(0, 20);
+    var sheet = getErrorsSheet_();
+    sheet.appendRow([new Date(), code, page, action, message, stack, status, userAgent]);
+
+    notifyDeveloper_(code, page, action, message, stack, status, userAgent);
+    return jsonResponse({ ok: true, code: code, notified: true });
+  } catch (err) {
+    console.error("Error report handling failed: " + err.message);
+    return jsonResponse({ ok: false });
+  }
+}
+
+function getErrorsSheet_() {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName("Errors") || spreadsheet.insertSheet("Errors");
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Timestamp", "Error code", "Page", "Action", "Message", "Stack", "HTTP status", "Browser"]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function setupErrorsSheet() {
+  getErrorsSheet_();
+}
+
+function notifyDeveloper_(code, page, action, message, stack, status, userAgent) {
+  var properties = PropertiesService.getScriptProperties();
+  var token = properties.getProperty("TELEGRAM_TOKEN");
+  var chatId = properties.getProperty("TELEGRAM_CHAT_ID");
+  if (!token || !chatId) throw new Error("Telegram Script Properties are not configured.");
+  var text = [
+    "🚨 MIYO system error " + code,
+    "Page: " + page,
+    "Action: " + action,
+    "Message: " + message,
+    status ? "HTTP: " + status : "",
+    stack ? "Stack: " + stack.slice(0, 700) : "",
+    userAgent ? "Browser: " + userAgent : ""
+  ].filter(Boolean).join("\n").slice(0, 3900);
+  var response = UrlFetchApp.fetch("https://api.telegram.org/bot" + token + "/sendMessage", {
+    method: "post",
+    payload: { chat_id: chatId, text: text },
+    muteHttpExceptions: true
+  });
+  if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
+    throw new Error("Telegram returned HTTP " + response.getResponseCode());
+  }
+}
+
 // Store one admin code per row in column A, below the header in A1, on "AdminCodes".
 function verifyAdminCode(code) {
   try {
@@ -109,14 +175,14 @@ function verifyAdminCode(code) {
 function verifyStudentCode(code) {
   try {
     if (!code || SPREADSHEET_ID.indexOf("PASTE_") === 0) {
-      return jsonResponse({ ok: false, error: "Student login is not configured in Apps Script." });
+      return jsonResponse({ ok: false, type: "SYSTEM_ERROR", error: "Student login is not configured in Apps Script." });
     }
     var student = findStudentByCode(code);
     if (!student) return jsonResponse({ ok: false });
     student.response = getSavedResponse(code);
     return jsonResponse({ ok: true, student: student });
   } catch (error) {
-    return jsonResponse({ ok: false, error: "Could not read StudentCodes. Check the spreadsheet ID and Apps Script permissions." });
+      return jsonResponse({ ok: false, type: "SYSTEM_ERROR", error: "Could not read StudentCodes. Check the spreadsheet ID and Apps Script permissions." });
   }
 }
 

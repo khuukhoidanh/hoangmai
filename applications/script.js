@@ -101,6 +101,91 @@ $(function () {
     $(selector).text(text).prop("hidden", false);
   }
 
+  var ERROR_QUEUE_KEY = "miyo-pending-system-errors";
+  var currentAction = "page";
+  var errorBanner = null;
+
+  function errorDetails(message, stack, status) {
+    return {
+      code: "ERR-" + new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 8) + "-" + Math.random().toString(36).slice(2, 6).toUpperCase(),
+      page: location.pathname,
+      action: currentAction,
+      message: String(message || "Unknown system error").slice(0, 500),
+      stack: String(stack || "").slice(0, 1500),
+      status: status || "",
+      userAgent: navigator.userAgent
+    };
+  }
+
+  function showSystemError(offline) {
+    if (!errorBanner) {
+      errorBanner = document.createElement("aside");
+      errorBanner.className = "system-error-banner";
+      errorBanner.setAttribute("role", "alert");
+      errorBanner.innerHTML = '<strong>System problem</strong><p class="system-error-text"></p><button type="button" class="system-error-refresh">Refresh page</button>';
+      document.body.appendChild(errorBanner);
+      errorBanner.querySelector(".system-error-refresh").addEventListener("click", function () { location.reload(); });
+    }
+    errorBanner.querySelector(".system-error-text").textContent = offline
+      ? "Connection lost. Please refresh this page when your internet connection returns. The error report will be sent automatically."
+      : "A system error occurred. The technical description is being sent to the administrator automatically.";
+    errorBanner.hidden = false;
+  }
+
+  function getQueuedErrors() {
+    try { return JSON.parse(localStorage.getItem(ERROR_QUEUE_KEY) || "[]"); }
+    catch (error) { return []; }
+  }
+
+  function queueError(report) {
+    try {
+      var queue = getQueuedErrors();
+      if (!queue.some(function (entry) { return entry.code === report.code; })) queue.push(report);
+      localStorage.setItem(ERROR_QUEUE_KEY, JSON.stringify(queue.slice(-10)));
+    } catch (error) {
+      // Reporting must never interrupt the student's form.
+    }
+  }
+
+  function sendQueuedErrors() {
+    if (!navigator.onLine) return;
+    var queue = getQueuedErrors();
+    if (!queue.length) return;
+    var report = queue[0];
+    $.ajax({
+      url: SCRIPT_URL,
+      method: "POST",
+      data: JSON.stringify({ action: "reportError", error: report }),
+      contentType: "text/plain;charset=utf-8",
+      dataType: "json",
+      timeout: 20000
+    }).done(function (result) {
+      if (!result || !result.ok) return;
+      try { localStorage.setItem(ERROR_QUEUE_KEY, JSON.stringify(getQueuedErrors().filter(function (entry) { return entry.code !== report.code; }))); }
+      catch (error) { return; }
+      if (getQueuedErrors().length) sendQueuedErrors();
+      else if (errorBanner) errorBanner.querySelector(".system-error-text").textContent = "Error description sent to the administrator. You can refresh the page and try again.";
+    });
+  }
+
+  function reportSystemError(message, stack, status) {
+    var report = errorDetails(message, stack, status);
+    queueError(report);
+    showSystemError(!navigator.onLine);
+    sendQueuedErrors();
+  }
+
+  window.addEventListener("online", sendQueuedErrors);
+  window.addEventListener("offline", function () { showSystemError(true); });
+  window.addEventListener("error", function (event) {
+    reportSystemError(event.message || "Unhandled browser error", event.error && event.error.stack);
+  });
+  window.addEventListener("unhandledrejection", function (event) {
+    var reason = event.reason;
+    reportSystemError(reason && reason.message || String(reason || "Unhandled promise rejection"), reason && reason.stack);
+  });
+  sendQueuedErrors();
+
   // Chọn 1 nút duy nhất (role, zodiac)
   function buildSingleChips($box, list, key, onPick) {
     $.each(list, function (i, text) {
@@ -319,6 +404,7 @@ $(function () {
     var code = $.trim($("#accessCode").val()).toLowerCase();
     if (!code) { return; }
     $("#loginMsg").prop("hidden", true);
+    currentAction = "student-login";
     $("#loginBtn").prop("disabled", true).attr("aria-busy", "true").text("Checking… / Đang kiểm tra…");
     $.ajax({
       url: SCRIPT_URL,
@@ -334,9 +420,11 @@ $(function () {
         $("#languageScreen").prop("hidden", false);
       } else {
         var loginError = res && res.error;
+        if (res && res.type === "SYSTEM_ERROR") reportSystemError(loginError || "Student login backend failed");
         $("#loginMsg").text(loginError || "Mã không hợp lệ. Vui lòng kiểm tra lại với giáo viên. / Invalid code. Please check with your teacher.").prop("hidden", false);
       }
-    }).fail(function () {
+    }).fail(function (xhr, status, error) {
+      reportSystemError(error || status || "Student login request failed", "", xhr && xhr.status);
       $("#loginMsg").text("Không thể kết nối. Vui lòng thử lại. / Connection failed. Please try again.").prop("hidden", false);
     }).always(function () {
       $("#loginBtn").prop("disabled", false).attr("aria-busy", "false").html("Continue / Tiếp tục <span aria-hidden='true'>↗</span>");
@@ -565,6 +653,13 @@ $(function () {
   }
 
   function sendFailed(error) {
+    if (error && error.type === "USER_INPUT") {
+      sending = false;
+      $("#nextBtn").text(tr("Submit")).attr("aria-busy", "false");
+      refreshNext();
+      showMessage("#sendMsg", error.error || tr("Please check the required fields."));
+      return;
+    }
     var errorMessage = "";
     if (typeof error === "string") {
       errorMessage = error;
@@ -583,16 +678,20 @@ $(function () {
       }
     } else if (error && typeof error.message === "string") {
       errorMessage = error.message;
+    } else if (error && typeof error.error === "string") {
+      errorMessage = error.error;
     }
     sending = false;
     $("#nextBtn").text(tr("Submit")).attr("aria-busy", "false");
     refreshNext();
     showMessage("#sendMsg", errorMessage || tr("Couldn’t submit. Check your connection and press Submit again. Your answers are still here."));
+    reportSystemError(errorMessage || "Form submission failed", error && error.stack, error && (error.status || error.statusCode));
   }
 
   function submitForm() {
     if (sending) { return; }
     sending = true;
+    currentAction = "form-submit";
     $("#sendMsg").prop("hidden", true);
     $("#nextBtn").text(tr("Sending…")).attr("aria-busy", "true");
     refreshNext();
@@ -624,7 +723,7 @@ $(function () {
       })
       .done(function (res) {
         if (res && res.ok) { sending = false; showStep(SUCCESS_STEP); }
-        else { sendFailed(res && res.error ? res.error : "Couldn’t submit. Check your connection and try again."); }
+        else { sendFailed(res || "Couldn’t submit. Check your connection and try again."); }
       })
       .fail(sendFailed);
     }
