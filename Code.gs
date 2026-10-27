@@ -92,22 +92,65 @@ function doPost(e) {
 
 // Accept only technical diagnostics from the browser; never include form/student data.
 function reportSystemError(error) {
+  var lock = LockService.getScriptLock();
+  var locked = false;
   try {
-    var code = String(error.code || "ERR-" + Utilities.getUuid().slice(0, 8).toUpperCase()).slice(0, 32);
-    var page = String(error.page || "unknown").slice(0, 160);
+    error = error && typeof error === "object" ? error : {};
+    var page = String(error.page || "unknown").split(/[?#]/)[0].slice(0, 160);
+    if (!/^\/[A-Za-z0-9_./-]*$/.test(page)) page = "unknown";
     var action = String(error.action || "unknown").slice(0, 60);
-    var message = String(error.message || "Unspecified system error").slice(0, 500);
+    if (!/^[A-Za-z0-9_-]+$/.test(action)) action = "unknown";
+    var message = String(error.message || "Unspecified system error").replace(/[\r\n\t]+/g, " ").slice(0, 500);
     var stack = String(error.stack || "").slice(0, 1500);
     var userAgent = String(error.userAgent || "").slice(0, 300);
     var status = String(error.status || "").slice(0, 20);
-    var sheet = getErrorsSheet_();
-    sheet.appendRow([new Date(), code, page, action, message, stack, status, userAgent]);
+    var fingerprint = [page, action, message, stack].join("|");
+    var fingerprintHash = Utilities.base64EncodeWebSafe(
+      Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, fingerprint)
+    ).replace(/=+$/g, "");
+    var cache = CacheService.getScriptCache();
+    var fingerprintKey = "miyo-error-" + fingerprintHash;
 
-    notifyDeveloper_(code, page, action, message, stack, status, userAgent);
-    return jsonResponse({ ok: true, code: code, notified: true });
+    // Serialize deduplication, quota, logging, and notification to prevent concurrent spam.
+    lock.waitLock(10000);
+    locked = true;
+    var state = cache.get(fingerprintKey);
+    if (state && state.indexOf("sent:") === 0) {
+      return jsonResponse({ ok: true, code: state.substring(5), duplicate: true });
+    }
+
+    var providedCode = String(error.code || "");
+    if (!/^ERR-[A-Za-z0-9-]{1,27}$/.test(providedCode)) {
+      providedCode = "ERR-" + Utilities.getUuid().slice(0, 8).toUpperCase();
+    }
+    var code = state && state.indexOf("pending:") === 0 ? state.substring(8) : providedCode;
+
+    if (!state) {
+      var quotaKey = "miyo-error-report-window";
+      var reportsInWindow = Number(cache.get(quotaKey) || 0);
+      if (reportsInWindow >= 20) {
+        return jsonResponse({ ok: false, rateLimited: true });
+      }
+      getErrorsSheet_().appendRow([new Date(), code, page, action, message, stack, status, userAgent]);
+      // Keep one Sheet row per identical error; retries reuse this code and row.
+      cache.put(fingerprintKey, "pending:" + code, 21600);
+      cache.put(quotaKey, String(reportsInWindow + 1), 600);
+    }
+
+    try {
+      notifyDeveloper_(code, page, action, message, stack, status, userAgent);
+      cache.put(fingerprintKey, "sent:" + code, 21600);
+      return jsonResponse({ ok: true, code: code, notified: true });
+    } catch (notifyError) {
+      // Leave the fingerprint pending so the browser's queued retry can resend without another row.
+      console.error("Telegram error notification failed for " + code + ".");
+      return jsonResponse({ ok: false, code: code });
+    }
   } catch (err) {
     console.error("Error report handling failed: " + err.message);
     return jsonResponse({ ok: false });
+  } finally {
+    if (locked && lock.hasLock()) lock.releaseLock();
   }
 }
 
