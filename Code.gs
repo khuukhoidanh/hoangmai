@@ -130,15 +130,7 @@ function notifyDeveloper_(code, page, action, message, stack, status, userAgent)
   var token = properties.getProperty("TELEGRAM_TOKEN");
   var chatId = properties.getProperty("TELEGRAM_CHAT_ID");
   if (!token || !chatId) throw new Error("Telegram Script Properties are not configured.");
-  var text = [
-    "🚨 MIYO system error " + code,
-    "Page: " + page,
-    "Action: " + action,
-    "Message: " + message,
-    status ? "HTTP: " + status : "",
-    stack ? "Stack: " + stack.slice(0, 700) : "",
-    userAgent ? "Browser: " + userAgent : ""
-  ].filter(Boolean).join("\n").slice(0, 3900);
+  var text = "MIYO error report received. Error code: " + code;
   var response = UrlFetchApp.fetch("https://api.telegram.org/bot" + token + "/sendMessage", {
     method: "post",
     payload: { chat_id: chatId, text: text },

@@ -20,42 +20,7 @@ $(function () {
     "Music": "Âm nhạc", "Drawing": "Vẽ", "Reading": "Đọc sách", "Gaming": "Chơi trò chơi", "Sports": "Thể thao", "Photography": "Nhiếp ảnh", "Cooking": "Nấu ăn", "Travel": "Du lịch", "Movies": "Xem phim", "Dancing": "Nhảy", "Tech": "Công nghệ", "Fashion": "Thời trang",
     "Hot Pot": "Lẩu", "BBQ / Grilled Meat": "Thịt nướng", "Noodles": "Mì", "Rice Dishes": "Các món cơm", "Dumplings": "Bánh bao / há cảo", "Fried Chicken": "Gà rán", "Sushi": "Sushi", "Curry": "Cà ri", "Taiwanese Street Food": "Ẩm thực đường phố Đài Loan", "Western Food": "Món Âu", "Desserts": "Món tráng miệng", "Bubble Tea": "Trà sữa"
   };
-  function tr(text) { return language === "vi" ? (translations[text] || text) : text; }
-
-  $("[data-language]").on("click", function () {
-    language = this.getAttribute("data-language");
-    document.documentElement.lang = language;
-    if (language === "vi") {
-      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-      var node;
-      while ((node = walker.nextNode())) {
-        var original = $.trim(node.nodeValue);
-        if (translations[original]) node.nodeValue = node.nodeValue.replace(original, translations[original]);
-      }
-      $("#languageTitle").text("Chọn ngôn ngữ");
-      $(".language-card > p:not(.language-eyebrow)").text("Vui lòng chọn ngôn ngữ để tiếp tục.");
-      $(".language-eyebrow").text("MAKE IT YOURS · HÀ NỘI × CAO HÙNG 2026");
-      $("#roleChips").attr("aria-label", "Vai trò của bạn");
-      $("#zodiacChips").attr("aria-label", "Cung hoàng đạo");
-      $("#hobbiesChips").attr("aria-label", "Sở thích");
-      $("#colors").attr("aria-label", "Màu yêu thích");
-      $("#foodsChips").attr("aria-label", "Món muốn thử ở Đài Loan");
-      $("#position").attr("placeholder", "Ví dụ: Giáo viên chủ nhiệm");
-      $("#className").attr("placeholder", "Ví dụ: Khối 10 hoặc 10A1");
-      $("#dropText").text("Chạm để chọn ảnh");
-      $("#hobbyOther").attr("placeholder", "Khác: bạn còn yêu thích điều gì?");
-      $("#foodOther").attr("placeholder", "Khác: bạn muốn thử món gì?");
-      $("#allergyOther").attr("placeholder", "Khác: vui lòng mô tả");
-      $("#dislikeOther").attr("placeholder", "Khác: món nào?");
-      $("#colors").next("p").text("Không thấy màu phù hợp? Chạm vào vòng màu để chọn màu bất kỳ.");
-      $("#hobbiesCount").text("Đã chọn: " + data.hobbies.length + "/3");
-      $("#foodsCount").text("Đã chọn: " + data.foods.length + "/3");
-      $(".chips .chip").each(function () { $(this).text(tr($(this).data("value"))); });
-    }
-    $("#languageScreen, .language-screen").prop("hidden", true);
-    $(".bar, .wrap, #nav").prop("hidden", false);
-    showStep(currentStudent && currentStudent.response ? REVIEW_STEP : 0);
-  });
+  function tr(text) { return text; }
 
   /* ---------- 1. CÀI ĐẶT ---------- */
   var SCRIPT_URL = window.MIYO_CONFIG.scriptUrl;
@@ -117,7 +82,7 @@ $(function () {
     };
   }
 
-  function showSystemError(offline) {
+  function showSystemError(offline, errorCode) {
     if (!errorBanner) {
       errorBanner = document.createElement("aside");
       errorBanner.className = "system-error-banner";
@@ -126,9 +91,10 @@ $(function () {
       document.body.appendChild(errorBanner);
       errorBanner.querySelector(".system-error-refresh").addEventListener("click", function () { location.reload(); });
     }
+    var codeText = errorCode ? " Error code: " + errorCode + "." : "";
     errorBanner.querySelector(".system-error-text").textContent = offline
-      ? "Connection lost. Please refresh this page when your internet connection returns. The error report will be sent automatically."
-      : "A system error occurred. The technical description is being sent to the administrator automatically.";
+      ? "Connection lost." + codeText + " Please refresh this page when your internet connection returns. The error will be sent automatically. For faster help, contact the developer on Zalo: 0335695572."
+      : "A system error occurred." + codeText + " The error is being sent to the developer. For faster help, contact the developer on Zalo: 0335695572.";
     errorBanner.hidden = false;
   }
 
@@ -164,14 +130,14 @@ $(function () {
       try { localStorage.setItem(ERROR_QUEUE_KEY, JSON.stringify(getQueuedErrors().filter(function (entry) { return entry.code !== report.code; }))); }
       catch (error) { return; }
       if (getQueuedErrors().length) sendQueuedErrors();
-      else if (errorBanner) errorBanner.querySelector(".system-error-text").textContent = "Error description sent to the administrator. You can refresh the page and try again.";
+      else if (errorBanner) errorBanner.querySelector(".system-error-text").textContent = "Error code " + report.code + " has been sent to the developer. For faster help, contact the developer on Zalo: 0335695572.";
     });
   }
 
   function reportSystemError(message, stack, status) {
     var report = errorDetails(message, stack, status);
     queueError(report);
-    showSystemError(!navigator.onLine);
+    showSystemError(!navigator.onLine, report.code);
     sendQueuedErrors();
   }
 
@@ -219,7 +185,7 @@ $(function () {
           });
           $other.prop("hidden", picked.indexOf("Other") < 0);   // hiện ô điền khi chọn Other
           if (!$other.prop("hidden")) { $other.focus(); }
-          $("#" + key + "Count").text((language === "vi" ? "Đã chọn: " : "Selected: ") + picked.length + "/" + max);
+          $("#" + key + "Count").text("Selected: " + picked.length + "/" + max);
           refreshNext();
         })
         .appendTo($box);
@@ -312,8 +278,8 @@ $(function () {
     });
     $("#hobbyOther").val(data.hobbyOther).prop("hidden", data.hobbies.indexOf("Other") < 0);
     $("#foodOther").val(data.foodOther).prop("hidden", data.foods.indexOf("Other") < 0);
-    $("#hobbiesCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.hobbies.length + "/3");
-    $("#foodsCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.foods.length + "/3");
+    $("#hobbiesCount").text("Selected: " + data.hobbies.length + "/3");
+    $("#foodsCount").text("Selected: " + data.foods.length + "/3");
     $colors.find("button").each(function () {
       $(this).attr("aria-pressed", $(this).data("color") === data.color ? "true" : "false");
     });
@@ -342,7 +308,7 @@ $(function () {
     $("#roleChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip, .sw button")
       .attr("aria-pressed", "false").prop("hidden", false);
     $("#teacherBox, #studentBox, #hobbyOther, #foodOther").prop("hidden", true);
-    $("#hobbiesCount, #foodsCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + "0/3");
+    $("#hobbiesCount, #foodsCount").text("Selected: 0/3");
     $("#customColor").val("#2a3cff").removeClass("set");
     $("#consent").prop("checked", false);
     $("#photoInput").val("");
@@ -382,8 +348,8 @@ $(function () {
       $("#studentBox").prop("hidden", data.role !== "Student");
       $("#hobbyOther").val(data.hobbyOther).prop("hidden", data.hobbies.indexOf("Other") === -1);
       $("#foodOther").val(data.foodOther).prop("hidden", data.foods.indexOf("Other") === -1);
-      $("#hobbiesCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.hobbies.length + "/3");
-      $("#foodsCount").text((language === "vi" ? "Đã chọn: " : "Selected: ") + data.foods.length + "/3");
+      $("#hobbiesCount").text("Selected: " + data.hobbies.length + "/3");
+      $("#foodsCount").text("Selected: " + data.foods.length + "/3");
       $colors.find("button").each(function () {
         $(this).attr("aria-pressed", $(this).data("color") === data.color ? "true" : "false");
       });
@@ -405,7 +371,7 @@ $(function () {
     if (!code) { return; }
     $("#loginMsg").prop("hidden", true);
     currentAction = "student-login";
-    $("#loginBtn").prop("disabled", true).attr("aria-busy", "true").text("Checking… / Đang kiểm tra…");
+    $("#loginBtn").prop("disabled", true).attr("aria-busy", "true").text("Checking…");
     $.ajax({
       url: SCRIPT_URL,
       method: "POST",
@@ -417,17 +383,19 @@ $(function () {
       if (res && res.ok && res.student) {
         applyStudentProfile(res.student);
         $("#loginScreen").prop("hidden", true);
-        $("#languageScreen").prop("hidden", false);
+        $("#loginScreen").prop("hidden", true);
+        $(".bar, .wrap, #nav").prop("hidden", false);
+        showStep(currentStudent && currentStudent.response ? REVIEW_STEP : 0);
       } else {
         var loginError = res && res.error;
         if (res && res.type === "SYSTEM_ERROR") reportSystemError(loginError || "Student login backend failed");
-        $("#loginMsg").text(loginError || "Mã không hợp lệ. Vui lòng kiểm tra lại với giáo viên. / Invalid code. Please check with your teacher.").prop("hidden", false);
+        $("#loginMsg").text(loginError || "Invalid code. Contact the developer on Zalo: 0335695572.").prop("hidden", false);
       }
     }).fail(function (xhr, status, error) {
       reportSystemError(error || status || "Student login request failed", "", xhr && xhr.status);
-      $("#loginMsg").text("Không thể kết nối. Vui lòng thử lại. / Connection failed. Please try again.").prop("hidden", false);
+      $("#loginMsg").text("Could not connect. Please try again.").prop("hidden", false);
     }).always(function () {
-      $("#loginBtn").prop("disabled", false).attr("aria-busy", "false").html("Continue / Tiếp tục <span aria-hidden='true'>↗</span>");
+      $("#loginBtn").prop("disabled", false).attr("aria-busy", "false").html("Continue <span aria-hidden='true'>↗</span>");
     });
   });
 
