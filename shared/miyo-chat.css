@@ -49,7 +49,26 @@
 .miyo-chat-launcher:hover .miyo-chat-launcher-label,.miyo-chat-launcher:focus-visible .miyo-chat-launcher-label,.miyo-chat-launcher.is-open .miyo-chat-launcher-label { max-width: 150px; opacity: 1; transform: translateX(0); }
 .miyo-chat-launcher:focus-visible { outline: 2px solid var(--miyo-chat-accent); outline-offset: 4px; }
 @media(hover: none) {
-  .miyo-chat-launcher { width: 58px; }
+  .miyo-chat-launcher,
+  .miyo-chat-launcher:hover,
+  .miyo-chat-launcher:focus-visible,
+  .miyo-chat-launcher.is-open,
+  .miyo-chat-launcher.is-open:hover,
+  .miyo-chat-launcher.is-open:focus-visible {
+    width: 58px;
+    gap: 0;
+    transform: none !important;
+    box-shadow: 0 8px 24px rgba(25, 27, 27, .18);
+    transition-property: background-color, border-color, color;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .miyo-chat-launcher:active { transform: none !important; }
+  .miyo-chat-launcher:hover,
+  .miyo-chat-launcher:focus-visible { border-color: var(--miyo-chat-ink); background: var(--miyo-chat-ink); }
+  .miyo-chat-launcher.is-open,
+  .miyo-chat-launcher.is-open:hover,
+  .miyo-chat-launcher.is-open:focus-visible { border-color: var(--miyo-chat-accent); background: var(--miyo-chat-accent); }
+  .miyo-chat-launcher:focus-visible { outline-offset: -2px; }
   .miyo-chat-launcher .miyo-chat-launcher-label { display: none; }
 }
 
@@ -154,5 +173,19 @@
   .miyo-chat-launcher { right: 14px; bottom: 14px; width: 54px; height: 54px; min-height: 54px; padding: 0 13px; }
   .miyo-chat-panel { right: 8px; bottom: 82px; width: calc(100vw - 16px); height: min(470px, calc(100dvh - 100px)); }
   .miyo-chat-launcher.is-open,.miyo-chat-launcher.is-open:hover,.miyo-chat-launcher.is-open:focus-visible { width: 54px; gap: 0; transform: none; }
+}
+@media(max-width: 480px) and (hover: none) {
+  .miyo-chat-launcher,
+  .miyo-chat-launcher:hover,
+  .miyo-chat-launcher:focus-visible,
+  .miyo-chat-launcher.is-open,
+  .miyo-chat-launcher.is-open:hover,
+  .miyo-chat-launcher.is-open:focus-visible {
+    width: 54px;
+    height: 54px;
+    min-height: 54px;
+    gap: 0;
+    transform: none !important;
+  }
 }
 @media(prefers-reduced-motion: reduce) { .miyo-chat-panel { animation: none; } .miyo-chat-launcher,.miyo-chat-launcher-label { transition: none; } .miyo-chat-spinner { animation-duration: 1.5s; } }
