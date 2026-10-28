@@ -78,7 +78,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .city-captions b { color: var(--ink); font: 500 9px/1.4 var(--mono); letter-spacing: .1em; }
 .hero-bottom { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 30px; margin-top: auto; padding-top: 42px; }
 .hero-subtitle { margin: 0; font: 500 clamp(24px, 3vw, 42px)/1.05 var(--display); letter-spacing: -.06em; }
-.hero-aside { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.hero-aside { margin: 0; color: var(--muted); font-size: 12px; font-weight: 500; line-height: 1.7; }
 .scroll-cue { display: flex; align-items: center; gap: 16px; color: var(--muted); text-decoration: none; }
 .scroll-cue i { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--accent); font-size: 16px; font-style: normal; transition: transform .25s, background .25s; }
 .scroll-cue:hover i { transform: translateY(4px); background: var(--paper-deep); }
