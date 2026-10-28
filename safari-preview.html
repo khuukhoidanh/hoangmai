@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef0f4">
+  <title>Safari iPhone Preview — MIYO</title>
+  <link rel="stylesheet" href="safari-preview.css">
+  <script src="safari-preview.js" defer></script>
+</head>
+<body>
+  <header class="toolbar">
+    <a class="brand" href="./">MIYO <span>PREVIEW</span></a>
+    <div class="controls">
+      <label for="device">Thiết bị</label>
+      <select id="device">
+        <option value="se">iPhone SE · 375 × 667</option>
+        <option value="standard" selected>iPhone · 390 × 844</option>
+        <option value="plus">iPhone Plus · 430 × 932</option>
+      </select>
+      <label class="orientation"><input id="landscape" type="checkbox"> Ngang</label>
+      <button id="fit" type="button">Vừa khung</button>
+    </div>
+  </header>
+
+  <main>
+    <p class="hint">Mô phỏng Safari để xem bố cục responsive. Không mô phỏng chính xác iOS, font hệ thống, bàn phím hay hành vi thanh địa chỉ thật.</p>
+    <section class="stage" id="stage" aria-label="Bản xem trước Safari trên iPhone">
+      <div class="phone" id="phone">
+        <div class="safari-top">
+          <div class="status-bar"><span id="clock">9:41</span><span class="status-icons" aria-label="Tín hiệu, Wi-Fi, pin"><span class="signal">▮▮▮</span><span>◔</span><span class="battery"><i></i></span></span></div>
+          <form class="address-row" id="addressForm">
+            <button class="icon-button" id="back" type="button" aria-label="Quay lại" title="Quay lại">‹</button>
+            <input id="address" type="text" aria-label="Địa chỉ trang web" spellcheck="false" autocomplete="off">
+            <button class="icon-button reload" id="reload" type="button" aria-label="Tải lại" title="Tải lại">↻</button>
+          </form>
+        </div>
+        <iframe id="page" title="Trang web trong Safari iPhone mô phỏng"></iframe>
+        <div class="safari-bottom">
+          <div class="browser-tools"><button class="tool-button" id="bottomBack" type="button" aria-label="Quay lại">‹</button><button class="tool-button" id="forward" type="button" aria-label="Tiến tới">›</button><button class="tool-button share" type="button" aria-label="Chia sẻ (minh họa)">↑</button><button class="tool-button tabs" type="button" aria-label="Số tab (minh họa)">▢</button><button class="tool-button more" type="button" aria-label="Menu (minh họa)">•••</button></div>
+          <div class="home-indicator"><i></i></div>
+        </div>
+      </div>
+    </section>
+    <p class="footnote">Để xem thay đổi code trực tiếp, mở trang này qua server local (ví dụ <code>python -m http.server 8000</code>). Ô địa chỉ nhận đường dẫn trong site như <code>/neededaccess/miyo/</code>. Trang MIYO có cổng admin; cần phiên đăng nhập hợp lệ để xem phần nội bộ.</p>
+  </main>
+</body>
+</html>

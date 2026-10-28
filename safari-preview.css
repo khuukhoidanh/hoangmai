@@ -1,0 +1,47 @@
+:root { color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #17191d; background: #eef0f4; }
+* { box-sizing: border-box; }
+body { min-width: 320px; min-height: 100vh; margin: 0; }
+button, input, select { font: inherit; }
+.toolbar { position: sticky; z-index: 5; top: 0; display: flex; min-height: 62px; align-items: center; justify-content: space-between; gap: 20px; padding: 10px 22px; border-bottom: 1px solid #d7dbe3; background: rgba(255,255,255,.94); backdrop-filter: blur(14px); }
+.brand { color: #16191f; font-weight: 750; letter-spacing: -.05em; text-decoration: none; white-space: nowrap; }
+.brand span { margin-left: 6px; color: #707784; font-size: 10px; font-weight: 650; letter-spacing: .12em; }
+.controls { display: flex; align-items: center; gap: 10px; color: #525966; font-size: 12px; }
+.controls select, .controls button { min-height: 34px; padding: 0 10px; border: 1px solid #cfd4de; border-radius: 8px; background: white; color: #20242c; }
+.controls button { cursor: pointer; }
+.orientation { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+main { padding: 10px 20px 28px; }
+.hint, .footnote { max-width: 760px; margin: 8px auto; color: #68707d; font-size: 12px; line-height: 1.55; text-align: center; }
+.stage { display: flex; height: calc(100vh - 154px); min-height: 420px; align-items: center; justify-content: center; overflow: hidden; }
+.phone { --device-width: 390px; --device-height: 844px; position: relative; display: flex; width: var(--device-width); height: var(--device-height); flex: 0 0 auto; flex-direction: column; overflow: hidden; transform-origin: center; border: 8px solid #17191d; border-radius: 48px; background: #fff; box-shadow: 0 24px 70px rgba(31,38,51,.24), 0 2px 6px rgba(31,38,51,.14); }
+.safari-top { z-index: 2; flex: 0 0 91px; padding: 5px 13px 8px; background: #f7f7f8; }
+.status-bar { display: flex; height: 34px; align-items: center; justify-content: space-between; padding: 0 13px; color: #15171a; font-size: 14px; font-weight: 650; }
+.status-icons { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+.signal { letter-spacing: -3px; font-size: 12px; }
+.battery { position: relative; width: 19px; height: 10px; border: 1px solid currentColor; border-radius: 3px; }
+.battery::after { position: absolute; top: 2px; right: -3px; width: 2px; height: 4px; border-radius: 0 2px 2px 0; background: currentColor; content: ""; }
+.battery i { position: absolute; inset: 2px 4px 2px 2px; border-radius: 1px; background: currentColor; }
+.address-row { display: flex; height: 42px; align-items: center; gap: 5px; }
+.address-row input { width: 100%; height: 34px; min-width: 0; padding: 0 12px; border: 0; border-radius: 10px; outline: 0; background: #e7e8eb; color: #252932; font-size: 12px; text-align: center; }
+.address-row input:focus { background: #fff; box-shadow: 0 0 0 2px #cbd2df; text-align: left; }
+.icon-button { width: 28px; height: 34px; flex: 0 0 28px; border: 0; background: transparent; color: #1769c2; font-size: 27px; line-height: 1; cursor: pointer; }
+.icon-button:disabled, .tool-button:disabled { opacity: .35; cursor: default; }
+.icon-button.reload { font-size: 22px; }
+#page { width: 100%; min-height: 0; flex: 1 1 auto; border: 0; background: white; }
+.safari-bottom { z-index: 2; flex: 0 0 76px; padding: 0 18px; background: #f7f7f8; }
+.browser-tools { display: flex; height: 48px; align-items: center; justify-content: space-between; }
+.tool-button { width: 36px; height: 36px; border: 0; background: transparent; color: #1769c2; font-size: 28px; line-height: 1; cursor: pointer; }
+.tool-button.share { font-size: 23px; font-weight: 500; }
+.tool-button.tabs { width: 23px; height: 24px; border: 2px solid #1769c2; border-radius: 5px; font-size: 0; }
+.tool-button.more { font-size: 12px; letter-spacing: 1px; }
+.home-indicator { display: flex; height: 20px; align-items: center; justify-content: center; }
+.home-indicator i { width: 108px; height: 4px; border-radius: 5px; background: #17191d; }
+.footnote code { padding: 2px 4px; border-radius: 4px; background: #e2e5eb; color: #343b48; }
+@media (max-width: 650px) {
+  .toolbar { align-items: flex-start; flex-direction: column; gap: 8px; padding: 10px 14px; }
+  .controls { width: 100%; flex-wrap: wrap; gap: 7px; }
+  .controls label:first-child { display: none; }
+  .controls select { flex: 1; }
+  main { padding: 6px 8px 18px; }
+  .hint, .footnote { font-size: 11px; }
+  .stage { height: calc(100vh - 184px); min-height: 360px; }
+}

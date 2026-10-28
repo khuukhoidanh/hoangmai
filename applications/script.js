@@ -527,7 +527,7 @@ $(function () {
       reportSystemError(error || status || "Student login request failed", "", xhr && xhr.status);
       $("#loginMsg").text("Could not connect. Please try again.").prop("hidden", false);
     }).always(function () {
-      $("#loginBtn").prop("disabled", false).attr("aria-busy", "false").html("Continue <span aria-hidden='true'>↗</span>");
+      $("#loginBtn").prop("disabled", false).attr("aria-busy", "false").html('Continue <svg class="arrow-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M7 5h8v8"/></svg>');
     });
   });
 
