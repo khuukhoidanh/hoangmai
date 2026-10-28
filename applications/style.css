@@ -161,15 +161,18 @@ input[aria-invalid="true"]:focus { box-shadow:0 0 0 3px rgba(165,42,32,.12); }
   .language-options .btn { flex:1; }
   .language-options .btn.g { flex:1; }
   .nav { padding-right:14px; padding-left:14px; }
-  .nav>div { gap:8px; }
+  .nav>div { min-width:0; gap:8px; }
   .btn { min-width:0; min-height:48px; flex:1 1 0; padding:10px 12px; font-size:12px; }
-  .btn.g { flex:0 1 112px; }
+  .btn.g { flex:1 1 0; }
+  .nav-actions .btn.g { flex:0 0 50%; font-size:11px; }
   .login-screen,.language-screen { padding:84px 20px 42px; }
   .privacy-screen { align-items:start; padding:76px 16px 104px; }
   .privacy-card iframe { height:45svh; min-height:260px; }
   .language-control { gap:5px; font-size:11px; }
-  .language-control select { min-height:42px; padding:6px 22px 6px 7px; font-size:11px; }
-  .nav-actions { gap:7px; }
+  .language-control>span { display:none; }
+  .language-control select { width:92px; min-height:40px; padding:5px 20px 5px 7px; font-size:11px; }
+  .nav-actions { min-width:0; flex:1 1 0; gap:7px; }
+  .nav-actions .btn { min-width:0; white-space:nowrap; }
   .rev { padding:16px; }
 }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; scroll-behavior:auto!important; transition:none!important; } }

@@ -10,6 +10,7 @@
 }
 
 .miyo-chat-launcher {
+  box-sizing: border-box;
   position: fixed;
   z-index: 40;
   right: 24px;
@@ -19,9 +20,9 @@
   height: 58px;
   min-height: 58px;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 0;
-  padding: 0 16px;
+  padding: 0;
   border: 1px solid var(--miyo-chat-ink);
   border-radius: 999px;
   background: var(--miyo-chat-ink);
@@ -31,11 +32,14 @@
   box-shadow: 0 8px 24px rgba(25, 27, 27, .18);
   cursor: pointer;
   overflow: hidden;
-  transition: width .34s cubic-bezier(.2,.8,.2,1), transform .25s ease, background .2s ease, border-color .2s ease, box-shadow .25s ease;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
-.miyo-chat-launcher:hover,.miyo-chat-launcher:focus-visible,.miyo-chat-launcher.is-open { width: 204px; gap: 11px; border-color: var(--miyo-chat-accent); background: var(--miyo-chat-accent); box-shadow: 0 12px 30px rgba(25, 27, 27, .24); }
-.miyo-chat-launcher:hover,.miyo-chat-launcher:focus-visible { transform: translateY(-4px) scale(1.025); }
-.miyo-chat-launcher.is-open,.miyo-chat-launcher.is-open:hover,.miyo-chat-launcher.is-open:focus-visible { width: 204px; gap: 11px; transform: none; }
+.miyo-chat-launcher:hover,.miyo-chat-launcher:focus-visible { transform: none; }
+.miyo-chat-launcher:active,.miyo-chat-launcher.is-open { border-color: var(--miyo-chat-accent); background: var(--miyo-chat-accent); }
+.miyo-chat-launcher.is-open,.miyo-chat-launcher.is-open:hover,.miyo-chat-launcher.is-open:focus-visible { transform: none; }
 .miyo-chat-launcher-icon {
   display: grid;
   width: 26px;
@@ -45,8 +49,7 @@
 }
 .miyo-chat-launcher-icon svg { display: block; width: 24px; height: 24px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
 .miyo-chat-launcher-icon svg path:last-child { stroke-width: 2.2; }
-.miyo-chat-launcher-label { max-width: 0; overflow: hidden; opacity: 0; transform: translateX(-5px); transition: max-width .28s ease, opacity .18s ease .04s, transform .25s ease; }
-.miyo-chat-launcher:hover .miyo-chat-launcher-label,.miyo-chat-launcher:focus-visible .miyo-chat-launcher-label,.miyo-chat-launcher.is-open .miyo-chat-launcher-label { max-width: 150px; opacity: 1; transform: translateX(0); }
+.miyo-chat-launcher-label { display: none; }
 .miyo-chat-launcher:focus-visible { outline: 2px solid var(--miyo-chat-accent); outline-offset: 4px; }
 @media(hover: none) {
   .miyo-chat-launcher,
@@ -63,13 +66,7 @@
     -webkit-tap-highlight-color: transparent;
   }
   .miyo-chat-launcher:active { transform: none !important; }
-  .miyo-chat-launcher:hover,
-  .miyo-chat-launcher:focus-visible { border-color: var(--miyo-chat-ink); background: var(--miyo-chat-ink); }
-  .miyo-chat-launcher.is-open,
-  .miyo-chat-launcher.is-open:hover,
-  .miyo-chat-launcher.is-open:focus-visible { border-color: var(--miyo-chat-accent); background: var(--miyo-chat-accent); }
   .miyo-chat-launcher:focus-visible { outline-offset: -2px; }
-  .miyo-chat-launcher .miyo-chat-launcher-label { display: none; }
 }
 
 .miyo-chat-panel {
@@ -170,8 +167,9 @@
 .miyo-chat-modal-end:hover { background: #783923; }
 
 @media(max-width: 480px) {
-  .miyo-chat-launcher { right: 14px; bottom: 14px; width: 54px; height: 54px; min-height: 54px; padding: 0 13px; }
-  .miyo-chat-panel { right: 8px; bottom: 82px; width: calc(100vw - 16px); height: min(470px, calc(100dvh - 100px)); }
+  .miyo-chat-launcher { right: 14px; bottom: 14px; width: 54px; height: 54px; min-height: 54px; padding: 0; }
+  .miyo-chat-panel { z-index: 41; inset: 50% auto auto 50% !important; width: 80vw; max-width: 80vw; height: 80dvh; max-height: 80dvh; border-radius: 2px; transform: translate(-50%, -50%); }
+  [data-miyo-support-chat] .miyo-chat-launcher { z-index: 42; }
   .miyo-chat-launcher.is-open,.miyo-chat-launcher.is-open:hover,.miyo-chat-launcher.is-open:focus-visible { width: 54px; gap: 0; transform: none; }
 }
 @media(max-width: 480px) and (hover: none) {
@@ -188,4 +186,4 @@
     transform: none !important;
   }
 }
-@media(prefers-reduced-motion: reduce) { .miyo-chat-panel { animation: none; } .miyo-chat-launcher,.miyo-chat-launcher-label { transition: none; } .miyo-chat-spinner { animation-duration: 1.5s; } }
+@media(prefers-reduced-motion: reduce) { .miyo-chat-panel { animation: none; } .miyo-chat-launcher { transition: none; } .miyo-chat-spinner { animation-duration: 1.5s; } }

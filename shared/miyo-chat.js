@@ -34,6 +34,7 @@
 
   const launcher = root.querySelector(".miyo-chat-launcher");
   const panel = root.querySelector(".miyo-chat-panel");
+  const launcherPositionKey = "miyo-support-chat-launcher-position";
   const startSection = root.querySelector(".miyo-chat-start");
   const conversation = root.querySelector(".miyo-chat-conversation");
   const endedSection = root.querySelector(".miyo-chat-ended");
@@ -272,10 +273,96 @@
     } finally { busy = false; setOperationLoading(false); }
   }
 
+  function positionPanel() {
+    if (panel.hidden) return;
+    if (window.matchMedia("(max-width: 480px)").matches) {
+      panel.style.left = "50%";
+      panel.style.top = "50%";
+      panel.style.right = "auto";
+      panel.style.bottom = "auto";
+      return;
+    }
+    const margin = 8;
+    const gap = 12;
+    const launcherRect = launcher.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const left = Math.max(margin, Math.min(launcherRect.right - panelRect.width, window.innerWidth - panelRect.width - margin));
+    const top = Math.max(margin, Math.min(launcherRect.top - panelRect.height - gap, window.innerHeight - panelRect.height - margin));
+    panel.style.left = left + "px";
+    panel.style.top = top + "px";
+    panel.style.right = "auto";
+    panel.style.bottom = "auto";
+  }
+
+  function setLauncherPosition(left, top, persist) {
+    const margin = 8;
+    const rect = launcher.getBoundingClientRect();
+    let minLeft = margin;
+    let minTop = margin;
+    let maxLeft = window.innerWidth - rect.width - margin;
+    let maxTop = window.innerHeight - rect.height - margin;
+    if (!panel.hidden && !window.matchMedia("(max-width: 480px)").matches) {
+      const panelRect = panel.getBoundingClientRect();
+      minLeft = panelRect.width - rect.width + margin;
+      minTop = panelRect.height + 12 + margin;
+    }
+    const x = Math.max(minLeft, Math.min(left, maxLeft));
+    const y = Math.max(minTop, Math.min(top, maxTop));
+    launcher.style.left = x + "px";
+    launcher.style.top = y + "px";
+    launcher.style.right = "auto";
+    launcher.style.bottom = "auto";
+    if (persist) {
+      try { localStorage.setItem(launcherPositionKey, JSON.stringify({ x, y })); } catch (error) {}
+    }
+    positionPanel();
+  }
+
+  try {
+    const savedPosition = JSON.parse(localStorage.getItem(launcherPositionKey) || "null");
+    if (savedPosition && Number.isFinite(savedPosition.x) && Number.isFinite(savedPosition.y)) {
+      setLauncherPosition(savedPosition.x, savedPosition.y, false);
+    }
+  } catch (error) {}
+
+  let suppressLauncherClick = false;
+  launcher.addEventListener("pointerdown", (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    const rect = launcher.getBoundingClientRect();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    let moved = false;
+    const onMove = (moveEvent) => {
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      if (!moved && Math.hypot(dx, dy) < 5) return;
+      moved = true;
+      setLauncherPosition(rect.left + dx, rect.top + dy, true);
+      moveEvent.preventDefault();
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      if (moved) {
+        suppressLauncherClick = true;
+        window.setTimeout(() => { suppressLauncherClick = false; }, 0);
+      }
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+  });
+  window.addEventListener("resize", () => {
+    if (launcher.style.left) setLauncherPosition(parseFloat(launcher.style.left), parseFloat(launcher.style.top), true);
+  });
+
   launcher.addEventListener("click", () => {
+    if (suppressLauncherClick) return;
     panel.hidden = !panel.hidden;
     launcher.classList.toggle("is-open", !panel.hidden);
     launcher.setAttribute("aria-expanded", String(!panel.hidden));
+    if (!panel.hidden) positionPanel();
     if (!panel.hidden && session) { startSection.hidden = true; conversation.hidden = false; endedSection.hidden = true; poll(); }
     else { startSection.hidden = false; conversation.hidden = true; endedSection.hidden = true; }
     setLabels();
@@ -285,6 +372,7 @@
     launcher.classList.remove("is-open");
     launcher.setAttribute("aria-expanded", "false");
   });
+  window.addEventListener("resize", positionPanel);
   root.querySelector("[data-chat-start]").addEventListener("click", startChat);
   root.querySelector("[data-chat-new]").addEventListener("click", startChat);
   root.querySelector("[data-chat-cancel]").addEventListener("click", endChat);
