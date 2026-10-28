@@ -153,7 +153,7 @@ async function main() {
           if (payload.code === "mock-valid" || payload.code === "mock-existing") {
             calls.validLogins++;
             const responseData = payload.code === "mock-existing" ? {
-              fullName: "Existing Test", nick: "Test", role: "Student", className: "10A1", zodiac: "Aries",
+              fullName: "Existing Test", nick: "Test", role: "Student", gender: "Female", className: "10A1", zodiac: "Aries",
               hobbies: ["Music"], hobbyOther: "", color: "#e63946", foods: ["Hot Pot"], foodOther: "", photoUrl: "", consent: true
             } : null;
             response = { ok: true, student: { code: payload.code, response: responseData } };
@@ -234,6 +234,7 @@ async function main() {
     await click(pageCdp, "#startApplication");
     await waitFor(pageCdp, `document.querySelector('.step[data-step="0"]').classList.contains('on')`, "form start after privacy acknowledgment");
     assert.equal(await evaluate(pageCdp, `document.querySelector('#languageSelect').value`), "vi");
+    assert.equal(await evaluate(pageCdp, `Array.from(document.querySelectorAll('#roleChips .chip')).every((chip) => !chip.hidden && chip.getAttribute('aria-pressed') === 'false')`), true, "codes with no assigned role must let the user choose one");
     resultLines.push("PASS: privacy acknowledgment is required, and Vietnamese switching works before starting");
     await click(pageCdp, "#nextBtn");
     await click(pageCdp, "#nextBtn");
@@ -245,6 +246,7 @@ async function main() {
     await fill(pageCdp, "#fullName", "Local Test User");
     await fill(pageCdp, "#nick", "Tester");
     await click(pageCdp, "#roleChips .chip:nth-child(3)"); // Student
+    await click(pageCdp, "#genderChips .chip:first-child"); // Male
     await fill(pageCdp, "#className", "10A1");
     await click(pageCdp, "#zodiacChips .chip:first-child"); // Aries
     await click(pageCdp, "#nextBtn");
@@ -284,6 +286,7 @@ async function main() {
     await click(pageCdp, "#startApplication");
     await waitFor(pageCdp, `document.querySelector('.step[data-step="4"]').classList.contains('on')`, "existing-response review");
     assert.equal(await evaluate(pageCdp, `document.querySelector('#fullName').value`), "Existing Test");
+    assert.equal(await evaluate(pageCdp, `document.querySelector('#genderChips .chip:nth-child(2)').getAttribute('aria-pressed')`), "true");
     resultLines.push("PASS: existing response is restored to the review/edit flow");
 
     // Browser system error is reported through the mocked endpoint only.

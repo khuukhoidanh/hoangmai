@@ -10,6 +10,7 @@ var HEADERS = [
   "Full name",
   "Nickname",
   "Role",
+  "Gender",
   "Position",
   "Class",
   "Zodiac sign",
@@ -52,7 +53,10 @@ function doPost(e) {
       return jsonResponse({ ok: false, error: "This student code is invalid or inactive." });
     }
     var assignedRole = normalizeRole(enrolledStudent.role);
-    if (assignedRole === "admin" || normalizeRole(data.role) !== assignedRole) {
+    var submittedRole = normalizeRole(data.role);
+    if (assignedRole === "admin" ||
+        ["student", "teacher", "interpreter"].indexOf(submittedRole) < 0 ||
+        (["student", "teacher"].indexOf(assignedRole) >= 0 && submittedRole !== assignedRole)) {
       return jsonResponse({ ok: false, error: "The role does not match the role assigned to this code." });
     }
 
@@ -73,6 +77,7 @@ function doPost(e) {
     setResponseValue(row, headers, ["full name", "fullname", "name"], cleanCell(data.fullName));
     setResponseValue(row, headers, ["nickname", "nick name", "nick", "your nick name"], cleanCell(data.nick));
     setResponseValue(row, headers, ["role"], cleanCell(data.role));
+    setResponseValue(row, headers, ["gender", "sex"], cleanCell(data.gender));
     setResponseValue(row, headers, ["position"], cleanCell(data.position));
     setResponseValue(row, headers, ["class", "class name", "classname", "grade"], cleanCell(data.className));
     setResponseValue(row, headers, ["zodiac sign", "zodiac"], cleanCell(data.zodiac));
@@ -266,7 +271,7 @@ function findStudentByCode(code) {
     var row = rows[rowIndex];
     if (String(row[codeColumn] || "").trim().toLowerCase() !== submittedCode) continue;
     if (activeColumn >= 0 && ["false", "no", "0", "inactive", "disabled"].indexOf(String(row[activeColumn]).trim().toLowerCase()) !== -1) return null;
-    var role = getCellByHeader(row, headers, ["role"]) || "Student";
+    var role = getCellByHeader(row, headers, ["role"]);
     var normalizedRole = normalizeRole(role);
     return {
       code: row[codeColumn],
@@ -302,6 +307,7 @@ function getSavedResponse(code) {
       fullName: getCellByHeader(row, headers, ["full name", "fullname", "name"]),
       nick: getCellByHeader(row, headers, ["nickname", "nick name", "nick", "your nick name"]),
       role: getCellByHeader(row, headers, ["role"]),
+      gender: getCellByHeader(row, headers, ["gender", "sex"]),
       position: getCellByHeader(row, headers, ["position"]),
       className: getCellByHeader(row, headers, ["class", "class name", "classname", "grade"]),
       zodiac: getCellByHeader(row, headers, ["zodiac sign", "zodiac"]),
@@ -350,6 +356,10 @@ function ensureResponseHeaders(sheet) {
   } else if (headers[codeColumn] !== "code") {
     sheet.getRange(1, codeColumn + 1).setValue("code");
     headers[codeColumn] = "code";
+  }
+  if (findHeaderColumn(headers.map(normalizeHeader), ["gender", "sex"]) < 0) {
+    headers.push("Gender");
+    sheet.getRange(1, headers.length).setValue("Gender");
   }
   return headers.map(normalizeHeader);
 }
@@ -412,9 +422,11 @@ function validateSubmission(data) {
   if (!data || !data.fullName) missingFields.push("fullName");
   if (!data || !data.nick) missingFields.push("nick");
   if (!data || !data.role) missingFields.push("role");
+  if (!data || !data.gender) missingFields.push("gender");
   if (!data || !data.zodiac) missingFields.push("zodiac");
   if (!data || !data.color) missingFields.push("color");
   if (missingFields.length) throw new Error("Some required fields are missing: " + missingFields.join(", ") + ".");
+  if (["Male", "Female"].indexOf(data.gender) < 0) throw new Error("Please select Male or Female.");
   if (!Array.isArray(data.hobbies) || data.hobbies.length === 0) {
     throw new Error("At least one interest is required.");
   }

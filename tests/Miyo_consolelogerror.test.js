@@ -80,7 +80,7 @@ function createAppsScriptHarness() {
 
 test("privacy gate, live language selector, and form steps are present", () => {
   const html = fs.readFileSync(path.join(root, "applications/index.html"), "utf8");
-  for (const id of ["loginForm", "accessCode", "loginMsg", "privacyScreen", "privacyFrame", "privacyAgree", "startApplication", "languageSelect", "nextBtn", "backBtn", "photoInput", "consent", "sendMsg"]) {
+  for (const id of ["loginForm", "accessCode", "loginMsg", "privacyScreen", "privacyFrame", "privacyAgree", "startApplication", "languageSelect", "nextBtn", "backBtn", "genderChips", "photoInput", "consent", "sendMsg"]) {
     assert.match(html, new RegExp(`id=[\"']${id}[\"']`), `missing #${id}`);
   }
   for (let step = 0; step <= 5; step++) assert.match(html, new RegExp(`data-step=[\"']${step}[\"']`));

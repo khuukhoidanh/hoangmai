@@ -21,14 +21,14 @@ $(function () {
     "Error code {code} has been sent to the developer. For faster help, contact the developer on Zalo: 0335695572.": "Mã lỗi {code} đã được gửi cho dev. Nếu cần hỗ trợ nhanh, liên hệ dev qua Zalo: 0335695572.",
     "Selected: {count}/{max}": "Đã chọn: {count}/{max}",
     "Make It Yours.": "Dành riêng cho bạn.", "After our exchange in Hanoi, we’d love to know more about you before we meet again in Kaohsiung. It takes about 3 minutes.": "Sau chuyến giao lưu tại Hà Nội, chúng tôi muốn hiểu thêm về bạn trước khi gặp lại ở Cao Hùng. Bạn sẽ mất khoảng 3 phút.", "Who are you?": "Bạn là ai?", "Tell us what to call you.": "Hãy cho chúng tôi biết nên gọi bạn là gì.",
-    "Full name": "Họ và tên", "(Please enter your real full name)": "(vui lòng nhập họ và tên thật)", "Your Nick Name": "Biệt danh", "(Recommended: 5–12 characters)": "(khuyến khích 5–12 ký tự)", "Your role": "Vai trò của bạn", "Your position": "Chức vụ", "Your grade / class": "Khối / lớp của bạn", "Zodiac sign": "Cung hoàng đạo",
+    "Full name": "Họ và tên", "(Please enter your real full name)": "(vui lòng nhập họ và tên thật)", "Your Nick Name": "Biệt danh", "(Recommended: 5–12 characters)": "(khuyến khích 5–12 ký tự)", "Your role": "Vai trò của bạn", "Your position": "Chức vụ", "Your grade / class": "Khối / lớp của bạn", "Gender": "Giới tính", "Male": "Nam", "Female": "Nữ", "Zodiac sign": "Cung hoàng đạo",
     "Please complete the highlighted required fields before continuing.": "Vui lòng hoàn thành các mục bắt buộc được tô nổi bật để tiếp tục.", "Couldn’t submit. Check your connection and press Submit again. Your answers are still here.": "Chưa thể gửi. Hãy kiểm tra kết nối rồi nhấn Gửi lại. Câu trả lời của bạn vẫn được giữ lại.", "Sending…": "Đang gửi…",
     "Your favorites": "Những điều bạn yêu thích", "Quick picks. There are no right or wrong answers.": "Chọn nhanh nhé. Không có câu trả lời đúng hay sai.", "Interests": "Sở thích", "choose up to 3": "chọn tối đa 3", "Other: anything else you love?": "Khác: bạn còn yêu thích điều gì?", "The color that feels most like you": "Màu sắc thể hiện con người bạn", "What kind of food would you like to try in Taiwan?": "Bạn muốn thử món gì ở Đài Loan?", "Choose up to 3": "Chọn tối đa 3", "Other: what would you like to try?": "Khác: bạn muốn thử món gì?", "Selected: 0/3": "Đã chọn: 0/3", "Visual style you like": "Phong cách hình ảnh bạn thích",
     "Things to avoid": "Những điều cần tránh", "So we can plan a comfortable trip for you. Skip anything that doesn’t apply.": "Để chúng tôi chuẩn bị chuyến đi thoải mái cho bạn. Có thể bỏ qua mục không phù hợp.", "Allergies or dietary needs": "Dị ứng hoặc chế độ ăn", "Other: please describe": "Khác: vui lòng mô tả", "Foods you don’t like": "Những món bạn không thích", "Other: which foods?": "Khác: món nào?", "Places or activities you’d rather skip": "Địa điểm hoặc hoạt động bạn muốn tránh", "Other: where or what?": "Khác: địa điểm hoặc hoạt động nào?",
     "A photo of you": "Ảnh của bạn", "A clear, well-lit photo looking straight at the camera.": "Ảnh rõ nét, đủ sáng, nhìn thẳng vào máy ảnh.", "Tap to choose a photo": "Chạm để chọn ảnh", "Your selected photo": "Ảnh bạn đã chọn", "I agree to let the Trung Sơn team use and edit this photo. It will only be used internally.": "Tôi đồng ý để nhóm Trung Sơn sử dụng và chỉnh sửa ảnh này. Ảnh chỉ được sử dụng nội bộ.",
     "Review": "Xem lại", "Does everything look right? You can edit any part.": "Mọi thông tin đã chính xác chưa? Bạn có thể chỉnh sửa bất kỳ mục nào.", "Thank you.": "Cảm ơn bạn.", "See you in Kaohsiung.": "Hẹn gặp bạn tại Cao Hùng.", "Back": "Quay lại", "Start": "Bắt đầu", "Continue": "Tiếp tục", "Submit": "Gửi", "Step": "Bước",
     "Teacher": "Giáo viên", "Interpreter": "Phiên dịch viên", "Student": "Học sinh", "Other": "Khác", "Minimal": "Tối giản", "Clean, lots of space": "Gọn gàng, thoáng đãng", "Vibrant": "Rực rỡ", "Bold, high-contrast color": "Màu sắc nổi bật, tương phản cao", "Nostalgic": "Hoài niệm", "Warm tones, like old film": "Tông ấm như phim cũ", "Dreamy": "Mơ màng", "Soft, light, pastel": "Nhẹ nhàng, tông pastel",
-    "Role": "Vai trò", "Position": "Chức vụ", "Class": "Lớp", "Favorite color": "Màu yêu thích", "Style": "Phong cách", "Food to try in Taiwan": "Món muốn thử ở Đài Loan", "Allergies / dietary needs": "Dị ứng / chế độ ăn", "Foods you dislike": "Món không thích", "Places to skip": "Địa điểm muốn tránh", "Not provided": "Chưa cung cấp", "None": "Không có", "Edit details": "Chỉnh sửa thông tin", "Edit favorites": "Sửa sở thích", "Change photo": "Đổi ảnh",
+    "Role": "Vai trò", "Position": "Chức vụ", "Class": "Lớp", "Gender": "Giới tính", "Male": "Nam", "Female": "Nữ", "Favorite color": "Màu yêu thích", "Style": "Phong cách", "Food to try in Taiwan": "Món muốn thử ở Đài Loan", "Allergies / dietary needs": "Dị ứng / chế độ ăn", "Foods you dislike": "Món không thích", "Places to skip": "Địa điểm muốn tránh", "Not provided": "Chưa cung cấp", "None": "Không có", "Edit details": "Chỉnh sửa thông tin", "Edit favorites": "Sửa sở thích", "Change photo": "Đổi ảnh",
     "Aries": "Bạch Dương", "Taurus": "Kim Ngưu", "Gemini": "Song Tử", "Cancer": "Cự Giải", "Leo": "Sư Tử", "Virgo": "Xử Nữ", "Libra": "Thiên Bình", "Scorpio": "Bọ Cạp", "Sagittarius": "Nhân Mã", "Capricorn": "Ma Kết", "Aquarius": "Bảo Bình", "Pisces": "Song Ngư",
     "Music": "Âm nhạc", "Drawing": "Vẽ", "Reading": "Đọc sách", "Gaming": "Chơi trò chơi", "Sports": "Thể thao", "Photography": "Nhiếp ảnh", "Cooking": "Nấu ăn", "Travel": "Du lịch", "Movies": "Xem phim", "Dancing": "Nhảy", "Tech": "Công nghệ", "Fashion": "Thời trang",
     "Hot Pot": "Lẩu", "BBQ / Grilled Meat": "Thịt nướng", "Noodles": "Mì", "Rice Dishes": "Các món cơm", "Dumplings": "Bánh bao / há cảo", "Fried Chicken": "Gà rán", "Sushi": "Sushi", "Curry": "Cà ri", "Taiwanese Street Food": "Ẩm thực đường phố Đài Loan", "Western Food": "Món Âu", "Desserts": "Món tráng miệng", "Bubble Tea": "Trà sữa"
@@ -99,6 +99,7 @@ $(function () {
   /* ---------- 2. DANH SÁCH LỰA CHỌN ---------- */
   var OPTIONS = {
     roles:     ["Teacher", "Interpreter", "Student"],
+    gender:    ["Male", "Female"],
     zodiac:    ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"],
     hobbies:   ["Music", "Drawing", "Reading", "Gaming", "Sports", "Photography", "Cooking", "Travel", "Movies", "Dancing", "Tech", "Fashion"],
     foods:     ["Hot Pot", "BBQ / Grilled Meat", "Noodles", "Rice Dishes", "Dumplings", "Fried Chicken", "Sushi", "Curry", "Taiwanese Street Food", "Western Food", "Desserts", "Bubble Tea"],
@@ -107,7 +108,7 @@ $(function () {
 
   /* ---------- 3. CÂU TRẢ LỜI CỦA NGƯỜI DÙNG ---------- */
   var data = {
-    loginCode: "", fullName: "", nick: "",
+    loginCode: "", fullName: "", nick: "", gender: "",
     role: "", position: "", className: "",
     zodiac: "",
     hobbies: [], hobbyOther: "",
@@ -249,7 +250,7 @@ $(function () {
     $.each(list, function (i, text) {
       $("<button>", { type: "button", "class": "chip", text: tr(text), "aria-pressed": "false" }).data("value", text)
         .on("click", function () {
-          if (key === "role" && currentStudent && data.role === currentStudent.role) return;
+          if (key === "role" && currentStudent && currentStudent.roleLocked && data.role === currentStudent.role) return;
           var value = $(this).data("value");
           data[key] = (data[key] === value) ? "" : value;   // bấm lại để bỏ chọn
           $box.children().each(function () {
@@ -295,6 +296,8 @@ $(function () {
     if (data.role !== "Student") { data.className = ""; $("#className").val(""); }
   });
 
+  buildSingleChips($("#genderChips"), OPTIONS.gender, "gender");
+
   buildSingleChips($("#zodiacChips"), OPTIONS.zodiac, "zodiac");
 
   buildMultiChips($("#hobbiesChips"),   OPTIONS.hobbies,   "hobbies",   "hobbyOther",   3);
@@ -334,8 +337,9 @@ $(function () {
 
   function applyStudentProfile(student) {
     var saved = student.response || null;
-    var lockedRole = student.role || "Student";
-    currentStudent = { code: student.code, response: saved, role: lockedRole };
+    var assignedRole = student.role || "";
+    var lockedRole = assignedRole === "Student" || assignedRole === "Teacher" ? assignedRole : "";
+    currentStudent = { code: student.code, response: saved, role: lockedRole, roleLocked: Boolean(lockedRole) };
     data.loginCode = student.code;
     data.fullName = "";
     data.nick = "";
@@ -392,6 +396,7 @@ $(function () {
     }
     // StudentCodes only validates the access code; every response field starts blank.
     data.fullName = data.nick = data.role = data.position = data.className = "";
+    data.gender = "";
     data.zodiac = data.color = data.hobbyOther = data.foodOther = "";
     data.hobbies = [];
     data.foods = [];
@@ -399,7 +404,7 @@ $(function () {
     data.consent = false;
     $("#fullName, #nick, #className, #position, #hobbyOther, #foodOther")
       .val("").prop("readonly", false);
-    $("#roleChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip, .sw button")
+    $("#roleChips .chip, #genderChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip, .sw button")
       .attr("aria-pressed", "false").prop("hidden", false);
     $("#teacherBox, #studentBox, #hobbyOther, #foodOther").prop("hidden", true);
     $("#hobbiesCount, #foodsCount").text(tr("Selected: {count}/{max}").replace("{count}", 0).replace("{max}", 3));
@@ -412,7 +417,8 @@ $(function () {
     if (saved) {
       data.fullName = saved.fullName || "";
       data.nick = saved.nick || "";
-      data.role = lockedRole;
+      data.role = lockedRole || saved.role || "";
+      data.gender = saved.gender || "";
       data.position = saved.position || "";
       data.className = saved.className || "";
       data.zodiac = saved.zodiac || "";
@@ -429,11 +435,12 @@ $(function () {
       $("#nick").val(data.nick);
       $("#className").val(data.className);
       $("#position").val(data.position);
-      $("#roleChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip").each(function () {
+      $("#roleChips .chip, #genderChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip").each(function () {
         var key = $(this).closest("#roleChips").length ? "role" :
+          $(this).closest("#genderChips").length ? "gender" :
           $(this).closest("#zodiacChips").length ? "zodiac" :
           $(this).closest("#hobbiesChips").length ? "hobbies" : "foods";
-        var selected = key === "role" || key === "zodiac"
+        var selected = key === "role" || key === "gender" || key === "zodiac"
           ? data[key] === $(this).data("value")
           : data[key].indexOf($(this).data("value")) !== -1;
         $(this).attr("aria-pressed", selected ? "true" : "false").prop("hidden", false);
@@ -457,15 +464,15 @@ $(function () {
       }
     }
     // Lock the role to the value assigned in StudentCodes.
-    data.role = lockedRole;
+    if (lockedRole) data.role = lockedRole;
     $("#roleChips .chip").each(function () {
-      var selected = $(this).data("value") === lockedRole;
-      $(this).attr("aria-pressed", selected ? "true" : "false").prop("hidden", !selected);
+      var selected = $(this).data("value") === data.role;
+      $(this).attr("aria-pressed", selected ? "true" : "false").prop("hidden", lockedRole ? !selected : false);
     });
-    $("#teacherBox").prop("hidden", lockedRole !== "Teacher");
-    $("#studentBox").prop("hidden", lockedRole !== "Student");
-    $("#className").val(lockedRole === "Student" ? data.className : "");
-    $("#position").val(lockedRole === "Teacher" ? data.position : "");
+    $("#teacherBox").prop("hidden", data.role !== "Teacher");
+    $("#studentBox").prop("hidden", data.role !== "Student");
+    $("#className").val(data.role === "Student" ? data.className : "");
+    $("#position").val(data.role === "Teacher" ? data.position : "");
     refreshNext();
   }
 
@@ -572,7 +579,7 @@ $(function () {
   function isValid(step) {
     switch (step) {
       case 1:
-        return data.fullName && data.nick && data.role && data.zodiac &&
+        return data.fullName && data.nick && data.role && data.gender && data.zodiac &&
                (data.role !== "Teacher" || data.position) &&
                (data.role !== "Student" || data.className);
       case 2:
@@ -632,6 +639,7 @@ $(function () {
       if (!data.fullName) mark("#fullName");
       if (!data.nick) mark("#nick");
       if (!data.role) mark("#roleChips");
+      if (!data.gender) mark("#genderChips");
       if (data.role === "Teacher" && !data.position) mark("#position");
       if (data.role === "Student" && !data.className) mark("#className");
       if (!data.zodiac) mark("#zodiacChips");
@@ -649,7 +657,7 @@ $(function () {
     }
     if (shouldFocus && $firstMissing.length) {
       var focusTarget = $firstMissing;
-      if ($firstMissing.is(".grp") || $firstMissing.is("#roleChips, #zodiacChips, #hobbiesChips, #foodsChips, #colors")) {
+      if ($firstMissing.is(".grp") || $firstMissing.is("#roleChips, #genderChips, #zodiacChips, #hobbiesChips, #foodsChips, #colors")) {
         focusTarget = $firstMissing.find("button").first();
       } else if ($firstMissing.is(".ck")) {
         focusTarget = $firstMissing.find("input").first();
@@ -696,7 +704,8 @@ $(function () {
     var rows = [
       ["Full name", data.fullName],
       ["Your Nick Name", data.nick],
-      ["Role", data.role]
+      ["Role", data.role],
+      ["Gender", data.gender]
     ];
     if (data.role === "Teacher") { rows.push(["Position", data.position]); }
     if (data.role === "Student") { rows.push(["Class", data.className]); }
@@ -797,6 +806,7 @@ $(function () {
         fullName:  data.fullName,
         nick:      data.nick,
         role:      data.role,
+        gender:    data.gender,
         position:  data.position,
         className: data.className,
         zodiac:    data.zodiac,
