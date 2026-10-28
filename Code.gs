@@ -38,14 +38,22 @@ function doPost(e) {
     if (data && data.action === "login") {
       return verifyStudentCode(data.code);
     }
+    if (data && data.action === "adminResponses") {
+      return getAdminResponses(data.code);
+    }
     try {
       validateSubmission(data);
     } catch (validationError) {
       return jsonResponse({ ok: false, type: "USER_INPUT", error: validationError.message || "Please check the required fields." });
     }
     lock.waitLock(30000);
-    if (!isActiveStudentCode(data.code)) {
+    var enrolledStudent = findStudentByCode(data.code);
+    if (!enrolledStudent) {
       return jsonResponse({ ok: false, error: "This student code is invalid or inactive." });
+    }
+    var assignedRole = normalizeRole(enrolledStudent.role);
+    if (assignedRole === "admin" || normalizeRole(data.role) !== assignedRole) {
+      return jsonResponse({ ok: false, error: "The role does not match the role assigned to this code." });
     }
 
     var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -205,8 +213,31 @@ function verifyAdminCode(code) {
   }
 }
 
+// Admin response access is authorized against an active admin code on every request.
+function getAdminResponses(code) {
+  try {
+    var admin = findStudentByCode(code);
+    if (!admin || normalizeRole(admin.role) !== "admin") return jsonResponse({ ok: false });
+    var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);
+    if (!sheet || sheet.getLastRow() < 2) return jsonResponse({ ok: true, headers: [], rows: [] });
+    var values = sheet.getDataRange().getDisplayValues();
+    return jsonResponse({ ok: true, headers: values[0], rows: values.slice(1) });
+  } catch (error) {
+    return jsonResponse({ ok: false, error: "Could not load student responses." });
+  }
+}
+
+function normalizeRole(role) {
+  var value = String(role || "").trim().toLowerCase();
+  if (["hs", "học sinh", "hoc sinh", "student"].indexOf(value) >= 0) return "student";
+  if (["gv", "giáo viên", "giao vien", "teacher"].indexOf(value) >= 0) return "teacher";
+  if (value === "admin" || value === "administrator") return "admin";
+  if (value === "interpreter") return "interpreter";
+  return value;
+}
+
 // Read StudentCodes on every login request (no cache), so Sheet edits take effect immediately.
-// Expected columns are identified by row-1 headers; column A is used for codes if no code header exists.
+// StudentCodes uses only: code, role, active. Column A is used for codes if no code header exists.
 function verifyStudentCode(code) {
   try {
     if (!code || SPREADSHEET_ID.indexOf("PASTE_") === 0) {
@@ -235,13 +266,11 @@ function findStudentByCode(code) {
     var row = rows[rowIndex];
     if (String(row[codeColumn] || "").trim().toLowerCase() !== submittedCode) continue;
     if (activeColumn >= 0 && ["false", "no", "0", "inactive", "disabled"].indexOf(String(row[activeColumn]).trim().toLowerCase()) !== -1) return null;
+    var role = getCellByHeader(row, headers, ["role"]) || "Student";
+    var normalizedRole = normalizeRole(role);
     return {
       code: row[codeColumn],
-      fullName: getCellByHeader(row, headers, ["full name", "fullname", "name", "student name"]),
-      role: getCellByHeader(row, headers, ["role"]) || "Student",
-      position: getCellByHeader(row, headers, ["position"]),
-      className: getCellByHeader(row, headers, ["class", "class name", "classname", "grade"]),
-      photoUrl: getCellByHeader(row, headers, ["photo url", "photo"])
+      role: normalizedRole === "student" ? "Student" : normalizedRole === "teacher" ? "Teacher" : normalizedRole === "interpreter" ? "Interpreter" : normalizedRole === "admin" ? "Admin" : role
     };
   }
   return null;

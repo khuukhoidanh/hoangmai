@@ -13,5 +13,9 @@ This file is an internal project checklist, not a public privacy policy.
 
 ## Actions intentionally not taken
 - No remote Git push, deployment, publication, external service call, credential use, or access to student submissions.
-- No edits to the existing questionnaire, Apps Script integration, or its data files.
+- The questionnaire UI was refined locally; its Apps Script URL, payload contract, backend source, and data files were preserved. Synthetic browser requests were intercepted locally; no real records were accessed or submitted.
 - External design-reference searches failed; no specific reference sites are claimed as reviewed.
+
+## Development verification still pending
+- Optionally repeat the mocked submit flow with a stable browser harness; the states were observed in an earlier intercepted run, but a later repeat harness stopped prematurely.
+- Human keyboard and screen-reader review of the full wizard remains outstanding.

@@ -99,7 +99,10 @@ input[aria-invalid="true"]:focus { box-shadow:0 0 0 3px rgba(165,42,32,.12); }
 .ok { display:grid; width:72px; height:72px; place-items:center; margin:24px 0; border-radius:50%; background:var(--ink); color:white; font-size:38px; }
 .return-home { width:fit-content; max-width:100%; margin-top:8px; text-decoration:none; }
 .nav { position:fixed; right:0; bottom:0; left:0; z-index:4; padding:11px clamp(20px,5vw,80px) calc(11px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); background:rgba(243,242,239,.96); backdrop-filter:blur(12px); }
-.nav>div { display:flex; width:100%; max-width:1160px; justify-content:flex-end; gap:10px; margin:0 auto; }
+.nav>div { display:flex; width:100%; max-width:1160px; align-items:center; justify-content:space-between; gap:10px; margin:0 auto; }
+.nav-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; }
+.language-control { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:12px; font-weight:600; }
+.language-control select { min-height:42px; padding:7px 30px 7px 10px; border:1px solid var(--line); border-radius:2px; background:var(--card); color:var(--ink); font:inherit; cursor:pointer; }
 .btn { position:relative; display:inline-flex; min-width:132px; min-height:48px; align-items:center; justify-content:center; gap:10px; flex:0 1 210px; padding:11px 20px; border:1px solid var(--ink); border-radius:2px; background:var(--ink); color:white; font-size:13px; font-weight:600; letter-spacing:.015em; cursor:pointer; transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .2s,background .2s,color .2s,border-color .2s,box-shadow .2s; }
 .btn:not(:disabled):hover { transform:translateY(-2px); border-color:var(--accent-dark); background:var(--accent-dark); box-shadow:0 5px 14px rgba(23,25,27,.12); }
 .btn:not(:disabled):active { transform:translateY(0) scale(.99); box-shadow:none; }
@@ -113,6 +116,15 @@ input[aria-invalid="true"]:focus { box-shadow:0 0 0 3px rgba(165,42,32,.12); }
 .language-screen { position:relative; display:grid; width:100%; min-height:0; place-items:center; overflow:visible; padding:92px 24px 56px; }
 .language-screen::before { position:absolute; top:0; right:5%; left:5%; height:14px; border-bottom:1px solid var(--line); background:repeating-linear-gradient(90deg,transparent 0 10px,#111 10px 11px,transparent 11px 20px); content:""; }
 .login-screen { position:relative; display:grid; width:100%; min-height:0; place-items:center; overflow:visible; padding:92px 24px 56px; }
+.privacy-screen { position:relative; display:grid; width:100%; min-height:100svh; place-items:center; padding:84px 20px 112px; }
+.privacy-card { width:min(100%,820px); }
+.privacy-card h1 { max-width:none; margin:0 0 10px; font-size:clamp(42px,8vw,72px); line-height:.98; }
+.privacy-intro { margin:0 0 16px; color:var(--muted); }
+.privacy-card iframe { display:block; width:100%; height:min(48svh,430px); min-height:280px; border:1px solid var(--line); background:white; }
+.privacy-full-link { display:inline-block; margin-top:8px; color:var(--accent-dark); font-size:13px; }
+.privacy-check { display:flex; align-items:flex-start; gap:11px; margin:18px 0 14px; font-size:14px; cursor:pointer; }
+.privacy-check input { width:20px; height:20px; flex:none; margin:2px 0 0; accent-color:var(--accent); }
+.privacy-start { width:100%; }
 .login-screen::before { position:absolute; top:0; right:5%; left:5%; height:14px; border-bottom:1px solid var(--line); background:repeating-linear-gradient(90deg,transparent 0 10px,#111 10px 11px,transparent 11px 20px); content:""; }
 .login-card { width:min(100%,590px); }
 .login-card h1 { max-width:none; margin:0 0 14px; font-size:clamp(48px,10vw,82px); line-height:.95; }
@@ -152,6 +164,11 @@ input[aria-invalid="true"]:focus { box-shadow:0 0 0 3px rgba(165,42,32,.12); }
   .btn { min-width:0; min-height:48px; flex:1 1 0; padding:10px 12px; font-size:12px; }
   .btn.g { flex:0 1 112px; }
   .login-screen,.language-screen { padding:84px 20px 42px; }
+  .privacy-screen { align-items:start; padding:76px 16px 104px; }
+  .privacy-card iframe { height:45svh; min-height:260px; }
+  .language-control { gap:5px; font-size:11px; }
+  .language-control select { min-height:42px; padding:6px 22px 6px 7px; font-size:11px; }
+  .nav-actions { gap:7px; }
   .rev { padding:16px; }
 }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; scroll-behavior:auto!important; transition:none!important; } }

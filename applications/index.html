@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Applications — MIYO</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
@@ -21,6 +21,22 @@
         <button class="btn login-submit" id="loginBtn" type="submit" aria-busy="false">Continue <span aria-hidden="true">↗</span></button>
         <p class="login-message" id="loginMsg" role="alert" hidden></p>
       </form>
+    </div>
+  </section>
+
+  <section class="privacy-screen" id="privacyScreen" aria-labelledby="privacyTitle" hidden>
+    <a class="home-link" href="../">MIYO <span aria-hidden="true">↗</span></a>
+    <div class="privacy-card">
+      <p class="language-eyebrow">MAKE IT YOURS · HANOI × KAOHSIUNG 2026</p>
+      <h1 id="privacyTitle">Before you begin</h1>
+      <p class="privacy-intro">Please review the privacy notice before starting. You can change the language using the menu below.</p>
+      <iframe id="privacyFrame" src="privacy.html" title="MIYO Privacy Notice" loading="eager"></iframe>
+      <a class="privacy-full-link" href="privacy.html" target="_blank" rel="noopener">Open the full privacy notice in a new tab</a>
+      <label class="privacy-check" for="privacyAgree">
+        <input id="privacyAgree" type="checkbox">
+        <span>I have read the privacy notice and understand how my information will be used.</span>
+      </label>
+      <button class="btn privacy-start" id="startApplication" type="button" disabled>Start application <span aria-hidden="true">↗</span></button>
     </div>
   </section>
 
@@ -101,7 +117,7 @@
     <!-- Bước 3: Photo -->
     <section class="step" data-step="3">
       <h2>A photo of you</h2>
-      <p class="lead">A clear, well-lit photo looking straight at the camera.</p>
+      <p class="lead">Please upload a clear, sharp portrait or close-up showing your upper body (from the waist up), facing the camera. Avoid blurry photos so we can edit it easily.</p>
 
       <label class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a photo" aria-controls="photoInput" aria-describedby="photoMsg">
         <span id="dropText">Tap to choose a photo</span>
@@ -135,13 +151,21 @@
   <!-- Thanh nút Back / Continue -->
   <div class="nav" id="nav" hidden>
     <div>
-      <button class="btn g" id="backBtn" type="button" hidden>Back</button>
-      <button class="btn" id="nextBtn" type="button" aria-busy="false">Start</button>
+      <label class="language-control" for="languageSelect"><span>Language</span>
+        <select id="languageSelect" aria-label="Choose language">
+          <option value="en">English</option>
+          <option value="vi">Tiếng Việt</option>
+        </select>
+      </label>
+      <div class="nav-actions">
+        <button class="btn g" id="backBtn" type="button" hidden>Back</button>
+        <button class="btn" id="nextBtn" type="button" aria-busy="false">Start</button>
+      </div>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../shared/miyo-config.js"></script>
-  <script src="script.js?v=12"></script>
+  <script src="script.js?v=13"></script>
 </body>
 </html>

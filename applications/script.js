@@ -6,7 +6,20 @@
 $(function () {
 
   var language = "en";
+  try { language = localStorage.getItem("miyo-language") === "vi" ? "vi" : "en"; } catch (storageError) {}
   var translations = {
+    "MAKE IT YOURS · HANOI × KAOHSIUNG 2026": "MAKE IT YOURS · HÀ NỘI × CAO HÙNG 2026",
+    "Student access": "Quyền truy cập học sinh", "Enter your personal access code. If it does not work, contact the developer on Zalo: 0335695572.": "Nhập mã truy cập cá nhân. Nếu mã không hoạt động, liên hệ dev qua Zalo: 0335695572.",
+    "Access code": "Mã truy cập", "Enter your access code": "Nhập mã truy cập", "Continue": "Tiếp tục", "Checking…": "Đang kiểm tra…", "Could not connect. Please try again.": "Không thể kết nối. Vui lòng thử lại.",
+    "Before you begin": "Trước khi bắt đầu", "Please review the privacy notice before starting. You can change the language using the menu below.": "Vui lòng xem thông báo quyền riêng tư trước khi bắt đầu. Bạn có thể đổi ngôn ngữ bằng menu bên dưới.", "MIYO Privacy Notice": "Thông báo quyền riêng tư MIYO",
+    "Open the full privacy notice in a new tab": "Mở toàn bộ thông báo quyền riêng tư trong tab mới", "I have read the privacy notice and understand how my information will be used.": "Tôi đã đọc thông báo quyền riêng tư và hiểu thông tin của mình sẽ được sử dụng như thế nào.",
+    "Start application": "Bắt đầu điền thông tin", "Language": "Ngôn ngữ", "Choose language": "Chọn ngôn ngữ",
+    "Please upload a clear, sharp portrait or close-up showing your upper body (from the waist up), facing the camera. Avoid blurry photos so we can edit it easily.": "Vui lòng tải lên ảnh chân dung hoặc ảnh cận chụp từ nửa thân trên (từ eo trở lên), nhìn về phía máy ảnh. Ảnh cần rõ nét, không bị mờ để thuận tiện cho việc chỉnh sửa.",
+    "Invalid code. Contact the developer on Zalo: 0335695572.": "Mã không hợp lệ. Vui lòng liên hệ dev qua Zalo: 0335695572.", "System problem": "Lỗi hệ thống", "Connection lost.": "Mất kết nối mạng.",
+    "Connection lost. {code} Please refresh this page when your internet connection returns. The error will be sent automatically. For faster help, contact the developer on Zalo: 0335695572.": "Mất kết nối mạng.{code} Vui lòng tải lại trang khi có kết nối. Lỗi sẽ được tự động gửi đi. Nếu cần hỗ trợ nhanh, liên hệ dev qua Zalo: 0335695572.",
+    "A system error occurred. {code} The error is being sent to the developer. For faster help, contact the developer on Zalo: 0335695572.": "Đã xảy ra lỗi hệ thống.{code} Lỗi đang được gửi cho dev. Nếu cần hỗ trợ nhanh, liên hệ dev qua Zalo: 0335695572.",
+    "Error code {code} has been sent to the developer. For faster help, contact the developer on Zalo: 0335695572.": "Mã lỗi {code} đã được gửi cho dev. Nếu cần hỗ trợ nhanh, liên hệ dev qua Zalo: 0335695572.",
+    "Selected: {count}/{max}": "Đã chọn: {count}/{max}",
     "Make It Yours.": "Dành riêng cho bạn.", "After our exchange in Hanoi, we’d love to know more about you before we meet again in Kaohsiung. It takes about 3 minutes.": "Sau chuyến giao lưu tại Hà Nội, chúng tôi muốn hiểu thêm về bạn trước khi gặp lại ở Cao Hùng. Bạn sẽ mất khoảng 3 phút.", "Who are you?": "Bạn là ai?", "Tell us what to call you.": "Hãy cho chúng tôi biết nên gọi bạn là gì.",
     "Full name": "Họ và tên", "(Please enter your real full name)": "(vui lòng nhập họ và tên thật)", "Your Nick Name": "Biệt danh", "(Recommended: 5–12 characters)": "(khuyến khích 5–12 ký tự)", "Your role": "Vai trò của bạn", "Your position": "Chức vụ", "Your grade / class": "Khối / lớp của bạn", "Zodiac sign": "Cung hoàng đạo",
     "Please complete the highlighted required fields before continuing.": "Vui lòng hoàn thành các mục bắt buộc được tô nổi bật để tiếp tục.", "Couldn’t submit. Check your connection and press Submit again. Your answers are still here.": "Chưa thể gửi. Hãy kiểm tra kết nối rồi nhấn Gửi lại. Câu trả lời của bạn vẫn được giữ lại.", "Sending…": "Đang gửi…",
@@ -20,7 +33,63 @@ $(function () {
     "Music": "Âm nhạc", "Drawing": "Vẽ", "Reading": "Đọc sách", "Gaming": "Chơi trò chơi", "Sports": "Thể thao", "Photography": "Nhiếp ảnh", "Cooking": "Nấu ăn", "Travel": "Du lịch", "Movies": "Xem phim", "Dancing": "Nhảy", "Tech": "Công nghệ", "Fashion": "Thời trang",
     "Hot Pot": "Lẩu", "BBQ / Grilled Meat": "Thịt nướng", "Noodles": "Mì", "Rice Dishes": "Các món cơm", "Dumplings": "Bánh bao / há cảo", "Fried Chicken": "Gà rán", "Sushi": "Sushi", "Curry": "Cà ri", "Taiwanese Street Food": "Ẩm thực đường phố Đài Loan", "Western Food": "Món Âu", "Desserts": "Món tráng miệng", "Bubble Tea": "Trà sữa"
   };
-  function tr(text) { return text; }
+  var reverseTranslations = {};
+  Object.keys(translations).forEach(function (english) { reverseTranslations[translations[english]] = english; });
+
+  function tr(text) {
+    text = String(text === undefined || text === null ? "" : text);
+    if (language === "vi") return translations[text] || text.split(", ").map(function (part) { return translations[part] || part; }).join(", ");
+    return reverseTranslations[text] || text.split(", ").map(function (part) { return reverseTranslations[part] || part; }).join(", ");
+  }
+
+  function captureEnglishText() {
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) node.__miyoEnglishText = node.nodeValue;
+    $("[placeholder], [aria-label], [title]").each(function () {
+      this.__miyoEnglishAttributes = {};
+      ["placeholder", "aria-label", "title"].forEach(function (attribute) {
+        if (this.hasAttribute(attribute)) this.__miyoEnglishAttributes[attribute] = this.getAttribute(attribute);
+      }, this);
+    });
+  }
+
+  function localizedStaticText(englishText) {
+    var trimmed = englishText.trim();
+    if (!trimmed) return englishText;
+    var translated = language === "vi" ? (translations[trimmed] || trimmed) : (reverseTranslations[trimmed] || trimmed);
+    var start = englishText.indexOf(trimmed);
+    return englishText.slice(0, start) + translated + englishText.slice(start + trimmed.length);
+  }
+
+  function applyLanguage(nextLanguage) {
+    language = nextLanguage === "vi" ? "vi" : "en";
+    document.documentElement.lang = language;
+    try { localStorage.setItem("miyo-language", language); } catch (storageError) {}
+
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      if (node.__miyoEnglishText !== undefined) node.nodeValue = localizedStaticText(node.__miyoEnglishText);
+    }
+    $("[placeholder], [aria-label], [title]").each(function () {
+      var originals = this.__miyoEnglishAttributes || {};
+      Object.keys(originals).forEach(function (attribute) {
+        this.setAttribute(attribute, tr(originals[attribute]));
+      }, this);
+    });
+    $(".chips .chip").each(function () { $(this).text(tr($(this).data("value"))); });
+    $("#hobbiesCount").text(tr("Selected: {count}/{max}").replace("{count}", data.hobbies.length).replace("{max}", 3));
+    $("#foodsCount").text(tr("Selected: {count}/{max}").replace("{count}", data.foods.length).replace("{max}", 3));
+    $("#languageSelect").val(language);
+    $(".privacy-full-link").attr("href", "privacy.html?lang=" + language);
+    if (currentStep === REVIEW_STEP) buildReview();
+    $("#stepLabel").text(currentStep > 0 && currentStep < SUCCESS_STEP ? tr("Step") + " " + currentStep + "/" + REVIEW_STEP : "");
+    $("#backBtn").text(tr("Back"));
+    $("#nextBtn").text(tr(currentStep === 0 ? "Start" : currentStep === REVIEW_STEP ? "Submit" : "Continue"));
+    refreshErrorBannerLanguage();
+    sendLanguageToPrivacyFrame();
+  }
 
   /* ---------- 1. CÀI ĐẶT ---------- */
   var SCRIPT_URL = window.MIYO_CONFIG.scriptUrl;
@@ -50,6 +119,7 @@ $(function () {
   var currentStep = 0;
   var sending = false;
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  captureEnglishText();
 
   /* ---------- 4. HÀM TIỆN ÍCH ---------- */
 
@@ -69,6 +139,7 @@ $(function () {
   var ERROR_QUEUE_KEY = "miyo-pending-system-errors";
   var currentAction = "page";
   var errorBanner = null;
+  var errorBannerState = null;
 
   function errorDetails(message, stack, status) {
     return {
@@ -82,19 +153,37 @@ $(function () {
     };
   }
 
+  function refreshErrorBannerLanguage() {
+    if (!errorBanner || !errorBannerState) return;
+    var codeText = errorBannerState.code ? " (" + errorBannerState.code + ")" : "";
+    var message = errorBannerState.offline
+      ? tr("Connection lost. {code} Please refresh this page when your internet connection returns. The error will be sent automatically. For faster help, contact the developer on Zalo: 0335695572.")
+      : errorBannerState.sent
+        ? tr("Error code {code} has been sent to the developer. For faster help, contact the developer on Zalo: 0335695572.")
+        : tr("A system error occurred. {code} The error is being sent to the developer. For faster help, contact the developer on Zalo: 0335695572.");
+    errorBanner.querySelector(".system-error-text").textContent = message.replace("{code}", codeText);
+  }
+
+  function sendLanguageToPrivacyFrame() {
+    var frame = document.getElementById("privacyFrame");
+    if (frame && frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: "miyo-language", language: language }, location.origin);
+    }
+  }
+
   function showSystemError(offline, errorCode) {
     if (!errorBanner) {
       errorBanner = document.createElement("aside");
       errorBanner.className = "system-error-banner";
       errorBanner.setAttribute("role", "alert");
-      errorBanner.innerHTML = '<strong>System problem</strong><p class="system-error-text"></p><button type="button" class="system-error-refresh">Refresh page</button>';
+      errorBanner.innerHTML = '<strong></strong><p class="system-error-text"></p><button type="button" class="system-error-refresh"></button>';
       document.body.appendChild(errorBanner);
       errorBanner.querySelector(".system-error-refresh").addEventListener("click", function () { location.reload(); });
     }
-    var codeText = errorCode ? " Error code: " + errorCode + "." : "";
-    errorBanner.querySelector(".system-error-text").textContent = offline
-      ? "Connection lost." + codeText + " Please refresh this page when your internet connection returns. The error will be sent automatically. For faster help, contact the developer on Zalo: 0335695572."
-      : "A system error occurred." + codeText + " The error is being sent to the developer. For faster help, contact the developer on Zalo: 0335695572.";
+    errorBanner.querySelector("strong").textContent = tr("System problem");
+    errorBanner.querySelector(".system-error-refresh").textContent = tr("Refresh page");
+    errorBannerState = { offline: Boolean(offline), code: errorCode || "", sent: false };
+    refreshErrorBannerLanguage();
     errorBanner.hidden = false;
   }
 
@@ -130,7 +219,10 @@ $(function () {
       try { localStorage.setItem(ERROR_QUEUE_KEY, JSON.stringify(getQueuedErrors().filter(function (entry) { return entry.code !== report.code; }))); }
       catch (error) { return; }
       if (getQueuedErrors().length) sendQueuedErrors();
-      else if (errorBanner) errorBanner.querySelector(".system-error-text").textContent = "Error code " + report.code + " has been sent to the developer. For faster help, contact the developer on Zalo: 0335695572.";
+       else if (errorBanner) {
+         errorBannerState = { offline: false, code: report.code, sent: true };
+         refreshErrorBannerLanguage();
+       }
     });
   }
 
@@ -157,6 +249,7 @@ $(function () {
     $.each(list, function (i, text) {
       $("<button>", { type: "button", "class": "chip", text: tr(text), "aria-pressed": "false" }).data("value", text)
         .on("click", function () {
+          if (key === "role" && currentStudent && data.role === currentStudent.role) return;
           var value = $(this).data("value");
           data[key] = (data[key] === value) ? "" : value;   // bấm lại để bỏ chọn
           $box.children().each(function () {
@@ -185,7 +278,7 @@ $(function () {
           });
           $other.prop("hidden", picked.indexOf("Other") < 0);   // hiện ô điền khi chọn Other
           if (!$other.prop("hidden")) { $other.focus(); }
-          $("#" + key + "Count").text("Selected: " + picked.length + "/" + max);
+          $("#" + key + "Count").text(tr("Selected: {count}/{max}").replace("{count}", picked.length).replace("{max}", max));
           refreshNext();
         })
         .appendTo($box);
@@ -241,7 +334,8 @@ $(function () {
 
   function applyStudentProfile(student) {
     var saved = student.response || null;
-    currentStudent = { code: student.code, response: saved };
+    var lockedRole = student.role || "Student";
+    currentStudent = { code: student.code, response: saved, role: lockedRole };
     data.loginCode = student.code;
     data.fullName = "";
     data.nick = "";
@@ -278,8 +372,8 @@ $(function () {
     });
     $("#hobbyOther").val(data.hobbyOther).prop("hidden", data.hobbies.indexOf("Other") < 0);
     $("#foodOther").val(data.foodOther).prop("hidden", data.foods.indexOf("Other") < 0);
-    $("#hobbiesCount").text("Selected: " + data.hobbies.length + "/3");
-    $("#foodsCount").text("Selected: " + data.foods.length + "/3");
+    $("#hobbiesCount").text(tr("Selected: {count}/{max}").replace("{count}", data.hobbies.length).replace("{max}", 3));
+    $("#foodsCount").text(tr("Selected: {count}/{max}").replace("{count}", data.foods.length).replace("{max}", 3));
     $colors.find("button").each(function () {
       $(this).attr("aria-pressed", $(this).data("color") === data.color ? "true" : "false");
     });
@@ -308,7 +402,7 @@ $(function () {
     $("#roleChips .chip, #zodiacChips .chip, #hobbiesChips .chip, #foodsChips .chip, .sw button")
       .attr("aria-pressed", "false").prop("hidden", false);
     $("#teacherBox, #studentBox, #hobbyOther, #foodOther").prop("hidden", true);
-    $("#hobbiesCount, #foodsCount").text("Selected: 0/3");
+    $("#hobbiesCount, #foodsCount").text(tr("Selected: {count}/{max}").replace("{count}", 0).replace("{max}", 3));
     $("#customColor").val("#2a3cff").removeClass("set");
     $("#consent").prop("checked", false);
     $("#photoInput").val("");
@@ -318,7 +412,7 @@ $(function () {
     if (saved) {
       data.fullName = saved.fullName || "";
       data.nick = saved.nick || "";
-      data.role = saved.role || "";
+      data.role = lockedRole;
       data.position = saved.position || "";
       data.className = saved.className || "";
       data.zodiac = saved.zodiac || "";
@@ -348,8 +442,8 @@ $(function () {
       $("#studentBox").prop("hidden", data.role !== "Student");
       $("#hobbyOther").val(data.hobbyOther).prop("hidden", data.hobbies.indexOf("Other") === -1);
       $("#foodOther").val(data.foodOther).prop("hidden", data.foods.indexOf("Other") === -1);
-      $("#hobbiesCount").text("Selected: " + data.hobbies.length + "/3");
-      $("#foodsCount").text("Selected: " + data.foods.length + "/3");
+      $("#hobbiesCount").text(tr("Selected: {count}/{max}").replace("{count}", data.hobbies.length).replace("{max}", 3));
+      $("#foodsCount").text(tr("Selected: {count}/{max}").replace("{count}", data.foods.length).replace("{max}", 3));
       $colors.find("button").each(function () {
         $(this).attr("aria-pressed", $(this).data("color") === data.color ? "true" : "false");
       });
@@ -362,8 +456,31 @@ $(function () {
         $("#dropText").hide();
       }
     }
+    // Lock the role to the value assigned in StudentCodes.
+    data.role = lockedRole;
+    $("#roleChips .chip").each(function () {
+      var selected = $(this).data("value") === lockedRole;
+      $(this).attr("aria-pressed", selected ? "true" : "false").prop("hidden", !selected);
+    });
+    $("#teacherBox").prop("hidden", lockedRole !== "Teacher");
+    $("#studentBox").prop("hidden", lockedRole !== "Student");
+    $("#className").val(lockedRole === "Student" ? data.className : "");
+    $("#position").val(lockedRole === "Teacher" ? data.position : "");
     refreshNext();
   }
+
+  $("#languageSelect").on("change", function () { applyLanguage(this.value); });
+  $("#privacyFrame").on("load", sendLanguageToPrivacyFrame);
+  $("#privacyAgree").on("change", function () {
+    $("#startApplication").prop("disabled", !this.checked);
+  });
+  $("#startApplication").on("click", function () {
+    if (!$("#privacyAgree").prop("checked")) return;
+    $("#privacyScreen").prop("hidden", true);
+    $(".bar, .wrap").prop("hidden", false);
+    $("#nextBtn").prop("hidden", false);
+    showStep(currentStudent && currentStudent.response ? REVIEW_STEP : 0);
+  });
 
   $("#loginForm").on("submit", function (event) {
     event.preventDefault();
@@ -381,11 +498,19 @@ $(function () {
       timeout: 30000
     }).done(function (res) {
       if (res && res.ok && res.student) {
+        if (res.student.role === "Admin") {
+          sessionStorage.setItem("miyo-admin-code", res.student.code);
+          window.location.assign("../neededaccess/admin.html");
+          return;
+        }
         applyStudentProfile(res.student);
         $("#loginScreen").prop("hidden", true);
-        $("#loginScreen").prop("hidden", true);
-        $(".bar, .wrap, #nav").prop("hidden", false);
-        showStep(currentStudent && currentStudent.response ? REVIEW_STEP : 0);
+        $("#privacyScreen").prop("hidden", false);
+        $("#nav").prop("hidden", false);
+        $("#backBtn, #nextBtn").prop("hidden", true);
+        $("#privacyAgree").prop("checked", false);
+        $("#startApplication").prop("disabled", true);
+        sendLanguageToPrivacyFrame();
       } else {
         var loginError = res && res.error;
         if (res && res.type === "SYSTEM_ERROR") reportSystemError(loginError || "Student login backend failed");
@@ -558,6 +683,8 @@ $(function () {
     else { highlightMissing(); }
   });
   $("#backBtn").on("click", function () { showStep(currentStep - 1); });
+
+  applyLanguage(language);
 
   /* ---------- 8. MÀN REVIEW ---------- */
   function buildReview() {
