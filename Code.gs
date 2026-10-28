@@ -42,6 +42,11 @@ function doPost(e) {
     if (data && data.action === "adminResponses") {
       return getAdminResponses(data.code);
     }
+    if (data && data.action === "supportChatStart") return startSupportChat_(data);
+    if (data && data.action === "supportChatSend") return sendSupportChatMessage_(data);
+    if (data && data.action === "supportChatPoll") return pollSupportChat_(data);
+    if (data && data.action === "supportChatCancel") return closeSupportChatForUser_(data);
+    if (data && data.action === "supportChatTelegramWebhook") return receiveSupportChatTelegramWebhook_(data);
     try {
       validateSubmission(data);
     } catch (validationError) {
@@ -101,6 +106,391 @@ function doPost(e) {
   } finally {
     if (lock.hasLock()) lock.releaseLock();
   }
+}
+
+// Support chat uses one Telegram forum topic per anonymous website conversation.
+// Configure SUPPORT_BOT_TOKEN, SUPPORT_GROUP_ID and SUPPORT_ARCHIVE_FOLDER_ID
+// in Apps Script Properties, then run setupSupportChat() once.
+var SUPPORT_INACTIVE_DAYS = 7;
+var SUPPORT_MAX_MESSAGE_LENGTH = 1200;
+var SUPPORT_STARTS_PER_HOUR = 20;
+var SUPPORT_SENDS_PER_MINUTE = 12;
+var SUPPORT_SESSION_HEADERS = ["Chat ID", "Token Hash", "Thread ID", "Opened At", "Last Activity", "Status", "Archive File ID"];
+var SUPPORT_MESSAGE_HEADERS = ["Chat ID", "Timestamp", "Sender", "Message", "Telegram Message ID", "Sequence"];
+
+function supportProperties_() {
+  var properties = PropertiesService.getScriptProperties();
+  var config = {
+    token: properties.getProperty("SUPPORT_BOT_TOKEN"),
+    groupId: properties.getProperty("SUPPORT_GROUP_ID"),
+    archiveFolderId: properties.getProperty("SUPPORT_ARCHIVE_FOLDER_ID")
+  };
+  if (!config.token || !config.groupId || !config.archiveFolderId) {
+    throw new Error("Support chat is not configured. Set SUPPORT_BOT_TOKEN, SUPPORT_GROUP_ID, and SUPPORT_ARCHIVE_FOLDER_ID in Apps Script Properties.");
+  }
+  return config;
+}
+
+function supportSheets_() {
+  var config = supportProperties_();
+  var folder = DriveApp.getFolderById(config.archiveFolderId);
+  if (folder.getSharingAccess() !== DriveApp.Access.PRIVATE) throw new Error("The support archive folder must be private.");
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sessions = spreadsheet.getSheetByName("SupportChats") || spreadsheet.insertSheet("SupportChats");
+  var messages = spreadsheet.getSheetByName("SupportMessages") || spreadsheet.insertSheet("SupportMessages");
+  if (sessions.getLastRow() === 0) sessions.appendRow(SUPPORT_SESSION_HEADERS);
+  if (messages.getLastRow() === 0) messages.appendRow(SUPPORT_MESSAGE_HEADERS);
+  return { config: config, folder: folder, sessions: sessions, messages: messages };
+}
+
+function ensureSupportMessageSequence_(sheet) {
+  if (String(sheet.getRange(1, 6).getValue()) !== "Sequence") sheet.getRange(1, 6).setValue("Sequence");
+  var properties = PropertiesService.getScriptProperties();
+  var migrated = properties.getProperty("SUPPORT_MESSAGE_SEQUENCE_MIGRATED") === "1";
+  if (migrated || sheet.getLastRow() < 2) return;
+  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, SUPPORT_MESSAGE_HEADERS.length).getValues();
+  var sequence = Number(properties.getProperty("SUPPORT_MESSAGE_SEQUENCE") || 0);
+  for (var i = 0; i < values.length; i++) {
+    if (values[i][0] && !Number(values[i][5])) {
+      sequence++;
+      sheet.getRange(i + 2, 6).setValue(sequence);
+    } else {
+      sequence = Math.max(sequence, Number(values[i][5]) || 0);
+    }
+  }
+  properties.setProperty("SUPPORT_MESSAGE_SEQUENCE", String(sequence));
+  properties.setProperty("SUPPORT_MESSAGE_SEQUENCE_MIGRATED", "1");
+}
+
+function nextSupportMessageSequence_() {
+  var properties = PropertiesService.getScriptProperties();
+  var sequence = Number(properties.getProperty("SUPPORT_MESSAGE_SEQUENCE") || 0) + 1;
+  properties.setProperty("SUPPORT_MESSAGE_SEQUENCE", String(sequence));
+  return sequence;
+}
+
+function supportTelegram_(method, payload, config) {
+  var response = UrlFetchApp.fetch("https://api.telegram.org/bot" + config.token + "/" + method, {
+    method: "post", contentType: "application/json", payload: JSON.stringify(payload || {}), muteHttpExceptions: true
+  });
+  var result;
+  try { result = JSON.parse(response.getContentText()); } catch (error) { throw new Error("Telegram returned an unreadable response."); }
+  if (response.getResponseCode() < 200 || response.getResponseCode() >= 300 || !result.ok) {
+    throw new Error("Telegram " + method + " failed: " + String(result.description || response.getResponseCode()).slice(0, 250));
+  }
+  return result.result;
+}
+
+function supportHash_(value) {
+  return Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(value))).replace(/=+$/g, "");
+}
+
+function supportSessionRow_(sheet, chatId) {
+  if (sheet.getLastRow() < 2) return 0;
+  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, SUPPORT_SESSION_HEADERS.length).getValues();
+  for (var i = 0; i < values.length; i++) if (String(values[i][0]) === String(chatId)) return i + 2;
+  return 0;
+}
+
+function supportAuthorizedSession_(chatId, token, requireActive) {
+  var stores = supportSheets_();
+  var rowNumber = supportSessionRow_(stores.sessions, chatId);
+  if (!rowNumber) return { stores: stores, closed: true };
+  var row = stores.sessions.getRange(rowNumber, 1, 1, SUPPORT_SESSION_HEADERS.length).getValues()[0];
+  if (!token || supportHash_(token) !== String(row[1])) return { stores: stores, denied: true };
+  if (requireActive && String(row[5]) !== "ACTIVE") return { stores: stores, closed: true };
+  return { stores: stores, rowNumber: rowNumber, row: row };
+}
+
+function startSupportChat_(data) {
+  var lock = LockService.getScriptLock();
+  var stores = null;
+  var topic = null;
+  try {
+    lock.waitLock(15000);
+    stores = supportSheets_();
+    var cache = CacheService.getScriptCache();
+    var hourKey = "support-chat-starts-" + Utilities.formatDate(new Date(), "UTC", "yyyyMMddHH");
+    var starts = Number(cache.get(hourKey) || 0);
+    if (starts >= SUPPORT_STARTS_PER_HOUR) return jsonResponse({ ok: false, rateLimited: true, error: "Too many new support chats. Please try again later." });
+    var chatId = Utilities.getUuid().replace(/-/g, "").toLowerCase();
+    var accessToken = Utilities.getUuid() + Utilities.getUuid();
+    topic = supportTelegram_("createForumTopic", { chat_id: stores.config.groupId, name: "MIYO support · " + chatId.slice(0, 8) }, stores.config);
+    var now = new Date();
+    stores.sessions.appendRow([chatId, supportHash_(accessToken), topic.message_thread_id, now, now, "ACTIVE", ""]);
+    var greeting = String(data && data.language || "en").toLowerCase().indexOf("vi") === 0
+      ? "Xin chào! Bạn đang trò chuyện với MIYO Assistant. Người trả lời bạn là thành viên thật của đội ngũ MIYO. Nếu có việc thật sự gấp, vui lòng liên hệ Zalo: 0335695572."
+      : "Hello! You’re chatting with MIYO Assistant. Replies come from a real member of the MIYO team. If something is urgent, please contact us on Zalo: 0335695572.";
+    stores.messages.appendRow([chatId, now, "assistant", greeting, "", nextSupportMessageSequence_()]);
+    cache.put(hourKey, String(starts + 1), 3600);
+    return jsonResponse({ ok: true, chatId: chatId, accessToken: accessToken, messages: [] });
+  } catch (error) {
+    if (topic && stores) {
+      try { supportTelegram_("deleteForumTopic", { chat_id: stores.config.groupId, message_thread_id: topic.message_thread_id }, stores.config); }
+      catch (cleanupError) { console.error("Could not remove an untracked support topic."); }
+    }
+    return jsonResponse({ ok: false, error: "Could not start a support chat. Please try again later." });
+  } finally {
+    if (lock.hasLock()) lock.releaseLock();
+  }
+}
+
+function sendSupportChatMessage_(data) {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(15000);
+    var auth = supportAuthorizedSession_(data.chatId, data.accessToken, true);
+    if (auth.denied) return jsonResponse({ ok: false, error: "This chat session is not valid." });
+    if (auth.closed) return jsonResponse({ ok: false, closed: true });
+    var text = String(data.message || "").trim();
+    if (!text || text.length > SUPPORT_MAX_MESSAGE_LENGTH) return jsonResponse({ ok: false, error: "Messages must be between 1 and " + SUPPORT_MAX_MESSAGE_LENGTH + " characters." });
+    var cache = CacheService.getScriptCache();
+    var rateKey = "support-chat-send-" + supportHash_(data.chatId + ":" + data.accessToken).slice(0, 30);
+    var count = Number(cache.get(rateKey) || 0);
+    if (count >= SUPPORT_SENDS_PER_MINUTE) return jsonResponse({ ok: false, rateLimited: true, error: "Please wait a moment before sending more messages." });
+    var timestamp = new Date();
+    var messageRow = auth.stores.messages.getLastRow() + 1;
+    var sequence = nextSupportMessageSequence_();
+    auth.stores.messages.appendRow([data.chatId, timestamp, "user", text, "", sequence]);
+    try {
+      var sent = supportTelegram_("sendMessage", {
+        chat_id: auth.stores.config.groupId,
+        message_thread_id: auth.row[2],
+        text: "<b>Visitor</b>\n" + escapeTelegramHtml_(text),
+        parse_mode: "HTML"
+      }, auth.stores.config);
+      auth.stores.messages.getRange(messageRow, 5).setValue(sent.message_id);
+    } catch (telegramError) {
+      auth.stores.messages.deleteRow(messageRow);
+      return jsonResponse({ ok: false, error: "Message could not be delivered. Please try again." });
+    }
+    auth.stores.sessions.getRange(auth.rowNumber, 5).setValue(timestamp);
+    cache.put(rateKey, String(count + 1), 60);
+    return jsonResponse({ ok: true, messageId: sequence });
+  } catch (error) {
+    return jsonResponse({ ok: false, error: "Could not send the message." });
+  } finally {
+    if (lock.hasLock()) lock.releaseLock();
+  }
+}
+
+function pollSupportChat_(data) {
+  try {
+    var auth = supportAuthorizedSession_(data.chatId, data.accessToken, false);
+    if (auth.denied) return jsonResponse({ ok: false, error: "This chat session is not valid." });
+    if (auth.closed) return jsonResponse({ ok: true, closed: true, messages: [] });
+    var after = Math.max(0, Number(data.after) || 0);
+    var messages = [];
+    var cursor = after;
+    var lastRow = auth.stores.messages.getLastRow();
+    if (lastRow >= 2) {
+      var rows = auth.stores.messages.getRange(2, 1, lastRow - 1, SUPPORT_MESSAGE_HEADERS.length).getValues();
+      for (var i = 0; i < rows.length; i++) {
+        var sequence = Number(rows[i][5]) || 0;
+        if (String(rows[i][0]) !== String(data.chatId)) continue;
+        cursor = Math.max(cursor, sequence);
+        if (sequence <= after) continue;
+        messages.push({ id: sequence, sender: String(rows[i][2]), text: String(rows[i][3]), timestamp: rows[i][1] instanceof Date ? rows[i][1].toISOString() : String(rows[i][1]) });
+      }
+    }
+    return jsonResponse({ ok: true, closed: String(auth.row[5]) !== "ACTIVE", messages: messages, cursor: cursor });
+  } catch (error) {
+    return jsonResponse({ ok: false, error: "Could not load chat messages." });
+  }
+}
+
+function closeSupportChatForUser_(data) {
+  var lock = LockService.getScriptLock();
+  var locked = false;
+  try {
+    lock.waitLock(15000);
+    locked = true;
+    var auth = supportAuthorizedSession_(data.chatId, data.accessToken, false);
+    if (auth.denied) return jsonResponse({ ok: false, error: "This chat session is not valid." });
+    if (auth.closed) return jsonResponse({ ok: true, closed: true });
+    var closed = closeSupportChat_(auth.stores, auth.rowNumber, "cancelled");
+    return jsonResponse({ ok: closed, closed: closed, error: closed ? "" : "The chat could not be archived yet. Please try again." });
+  } catch (error) {
+    return jsonResponse({ ok: false, error: "The chat could not be closed." });
+  } finally {
+    if (locked && lock.hasLock()) lock.releaseLock();
+  }
+}
+
+function closeSupportChat_(stores, sessionRow, reason) {
+  var row = stores.sessions.getRange(sessionRow, 1, 1, SUPPORT_SESSION_HEADERS.length).getValues()[0];
+  if (!row[0]) return true;
+  if (String(row[5]) === "ACTIVE") stores.sessions.getRange(sessionRow, 6).setValue("CLOSING");
+  var archiveFileId = String(row[6] || "");
+  if (!archiveFileId) {
+    var transcript = [];
+    var lastMessageRow = stores.messages.getLastRow();
+    if (lastMessageRow >= 2) {
+      var rows = stores.messages.getRange(2, 1, lastMessageRow - 1, SUPPORT_MESSAGE_HEADERS.length).getValues();
+      rows.forEach(function (message) {
+        if (String(message[0]) === String(row[0])) transcript.push({ timestamp: message[1] instanceof Date ? message[1].toISOString() : String(message[1]), sender: String(message[2]), text: String(message[3]) });
+      });
+    }
+    var archive = { chatId: String(row[0]), openedAt: row[3] instanceof Date ? row[3].toISOString() : String(row[3]), closedAt: new Date().toISOString(), reason: reason, messages: transcript };
+    var file = stores.folder.createFile("MIYO-chat-" + String(row[0]).slice(0, 8) + "-" + new Date().getTime() + ".json", JSON.stringify(archive, null, 2), MimeType.PLAIN_TEXT);
+    archiveFileId = file.getId();
+    stores.sessions.getRange(sessionRow, 7).setValue(archiveFileId);
+  }
+  try {
+    supportTelegram_("deleteForumTopic", { chat_id: stores.config.groupId, message_thread_id: row[2] }, stores.config);
+  } catch (error) {
+    return false;
+  }
+  deleteSupportMessages_(stores.messages, String(row[0]));
+  stores.sessions.deleteRow(sessionRow);
+  return true;
+}
+
+function deleteSupportMessages_(sheet, chatId) {
+  for (var rowNumber = sheet.getLastRow(); rowNumber >= 2; rowNumber--) {
+    if (String(sheet.getRange(rowNumber, 1).getValue()) === chatId) sheet.deleteRow(rowNumber);
+  }
+}
+
+function escapeTelegramHtml_(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function pollTelegramSupportInbox() {
+  var lock = LockService.getScriptLock();
+  var locked = false;
+  try {
+    lock.waitLock(20000);
+    locked = true;
+    var stores = supportSheets_();
+    var properties = PropertiesService.getScriptProperties();
+    var offset = Number(properties.getProperty("SUPPORT_TELEGRAM_UPDATE_OFFSET") || 0);
+    var updates = supportTelegram_("getUpdates", { offset: offset, timeout: 0, allowed_updates: ["message"] }, stores.config);
+    for (var i = 0; i < updates.length; i++) {
+      try {
+        processSupportTelegramUpdate_(updates[i], stores);
+        properties.setProperty("SUPPORT_TELEGRAM_UPDATE_OFFSET", String(updates[i].update_id + 1));
+      } catch (updateError) {
+        console.error("Support inbox update failed: " + updates[i].update_id);
+        break;
+      }
+    }
+  } catch (error) {
+    console.error("Support inbox polling failed: " + error.message);
+  } finally {
+    if (locked && lock.hasLock()) lock.releaseLock();
+  }
+}
+
+function receiveSupportChatTelegramWebhook_(data) {
+  var expectedSecret = PropertiesService.getScriptProperties().getProperty("SUPPORT_BRIDGE_SECRET");
+  if (!expectedSecret || String(data.bridgeSecret || "") !== expectedSecret) {
+    return jsonResponse({ ok: false, error: "Unauthorized webhook bridge." });
+  }
+  var update = data.update;
+  if (!update || !Number.isFinite(Number(update.update_id))) {
+    return jsonResponse({ ok: false, error: "Invalid Telegram update." });
+  }
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(15000);
+    var properties = PropertiesService.getScriptProperties();
+    var lastUpdateId = Number(properties.getProperty("SUPPORT_WEBHOOK_LAST_UPDATE_ID") || 0);
+    if (Number(update.update_id) <= lastUpdateId) return jsonResponse({ ok: true, duplicate: true });
+    var stores = supportSheets_();
+    processSupportTelegramUpdate_(update, stores);
+    properties.setProperty("SUPPORT_WEBHOOK_LAST_UPDATE_ID", String(update.update_id));
+    return jsonResponse({ ok: true });
+  } catch (error) {
+    console.error("Support webhook update failed: " + error.message);
+    return jsonResponse({ ok: false, error: "Could not process Telegram update." });
+  } finally {
+    if (lock.hasLock()) lock.releaseLock();
+  }
+}
+
+function setupSupportChatWebhook() {
+  var properties = PropertiesService.getScriptProperties();
+  var workerUrl = String(properties.getProperty("SUPPORT_WEBHOOK_URL") || "").replace(/\/+$/, "");
+  var secret = properties.getProperty("SUPPORT_TELEGRAM_WEBHOOK_SECRET");
+  if (!/^https:\/\/[a-z0-9-]+(?:\.[a-z0-9-]+)*\.workers\.dev$/i.test(workerUrl)) throw new Error("Set SUPPORT_WEBHOOK_URL to the deployed https://<worker>.<account>.workers.dev URL first.");
+  if (!secret || !/^[A-Za-z0-9_-]{1,256}$/.test(secret)) throw new Error("Set SUPPORT_TELEGRAM_WEBHOOK_SECRET using 1–256 letters, numbers, underscores, or hyphens.");
+  var stores = supportSheets_();
+  ensureSupportMessageSequence_(stores.messages);
+  supportTelegram_("setWebhook", { url: workerUrl + "/telegram", secret_token: secret, allowed_updates: ["message"], max_connections: 1, drop_pending_updates: false }, stores.config);
+  ScriptApp.getProjectTriggers().forEach(function (trigger) {
+    if (trigger.getHandlerFunction() === "pollTelegramSupportInbox") ScriptApp.deleteTrigger(trigger);
+  });
+  return "Telegram webhook enabled; the one-minute polling trigger was removed.";
+}
+
+function processSupportTelegramUpdate_(update, stores) {
+  var message = update && update.message;
+  if (!message || !message.message_thread_id || !message.from || message.from.is_bot) return;
+  var sessionRow = findSupportSessionByThread_(stores.sessions, message.message_thread_id);
+  if (!sessionRow) return;
+  var session = stores.sessions.getRange(sessionRow, 1, 1, SUPPORT_SESSION_HEADERS.length).getValues()[0];
+  if (String(session[5]) !== "ACTIVE") return;
+  var text = String(message.text || message.caption || "").trim();
+  if (supportTelegramMessageExists_(stores.messages, message.message_id)) return;
+  if (/^\/(cancel|close)(?:@\w+)?(?:\s|$)/i.test(text)) {
+    closeSupportChat_(stores, sessionRow, "cancelled-by-support");
+    return;
+  }
+  if (!text) return;
+  text = text.slice(0, SUPPORT_MAX_MESSAGE_LENGTH);
+  stores.messages.appendRow([session[0], new Date(message.date * 1000), "support", text, message.message_id, nextSupportMessageSequence_()]);
+  stores.sessions.getRange(sessionRow, 5).setValue(new Date(message.date * 1000));
+}
+
+function supportTelegramMessageExists_(sheet, telegramMessageId) {
+  if (sheet.getLastRow() < 2) return false;
+  var ids = sheet.getRange(2, 5, sheet.getLastRow() - 1, 1).getValues();
+  return ids.some(function (row) { return String(row[0]) === String(telegramMessageId); });
+}
+
+function findSupportSessionByThread_(sheet, threadId) {
+  if (sheet.getLastRow() < 2) return 0;
+  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, SUPPORT_SESSION_HEADERS.length).getValues();
+  for (var i = 0; i < values.length; i++) if (String(values[i][2]) === String(threadId)) return i + 2;
+  return 0;
+}
+
+function cleanupExpiredSupportChats() {
+  var lock = LockService.getScriptLock();
+  var locked = false;
+  try {
+    lock.waitLock(20000);
+    locked = true;
+    var stores = supportSheets_();
+    var cutoff = Date.now() - SUPPORT_INACTIVE_DAYS * 24 * 60 * 60 * 1000;
+    for (var rowNumber = stores.sessions.getLastRow(); rowNumber >= 2; rowNumber--) {
+      var session = stores.sessions.getRange(rowNumber, 1, 1, SUPPORT_SESSION_HEADERS.length).getValues()[0];
+      var lastActivity = session[4] instanceof Date ? session[4].getTime() : new Date(session[4]).getTime();
+      if (String(session[5]) === "CLOSING" || (String(session[5]) === "ACTIVE" && lastActivity <= cutoff)) {
+        closeSupportChat_(stores, rowNumber, String(session[5]) === "CLOSING" ? "previously-closed" : "inactive-7-days");
+      }
+    }
+  } catch (error) {
+    console.error("Support chat cleanup failed: " + error.message);
+  } finally {
+    if (locked && lock.hasLock()) lock.releaseLock();
+  }
+}
+
+function setupSupportChat() {
+  var stores = supportSheets_();
+  ensureSupportMessageSequence_(stores.messages);
+  var webhook = supportTelegram_("getWebhookInfo", {}, stores.config);
+  if (webhook && webhook.url) throw new Error("This bot currently has a Telegram webhook. Use a dedicated support bot or remove its webhook before enabling polling.");
+  var triggers = ScriptApp.getProjectTriggers();
+  if (!triggers.some(function (trigger) { return trigger.getHandlerFunction() === "pollTelegramSupportInbox"; })) {
+    ScriptApp.newTrigger("pollTelegramSupportInbox").timeBased().everyMinutes(1).create();
+  }
+  if (!triggers.some(function (trigger) { return trigger.getHandlerFunction() === "cleanupExpiredSupportChats"; })) {
+    ScriptApp.newTrigger("cleanupExpiredSupportChats").timeBased().everyHours(1).create();
+  }
+  return "Support chat sheets and polling/cleanup triggers are ready.";
 }
 
 // Accept only technical diagnostics from the browser; never include form/student data.

@@ -16,7 +16,7 @@ const CHROME = [
 if (!CHROME) throw new Error("Chrome or Edge was not found. Install a Chromium browser to run this simulation.");
 
 const mimeTypes = { ".css": "text/css", ".gif": "image/gif", ".html": "text/html", ".ico": "image/x-icon", ".jpg": "image/jpeg", ".js": "text/javascript", ".png": "image/png", ".svg": "image/svg+xml" };
-const calls = { invalidLogins: 0, validLogins: 0, adminFailures: 0, adminSuccesses: 0, submissions: 0, errorReports: [] };
+const calls = { invalidLogins: 0, validLogins: 0, adminFailures: 0, adminSuccesses: 0, submissions: 0, supportStarts: 0, supportSends: 0, supportPolls: 0, supportCancels: 0, errorReports: [] };
 const consoleErrors = [];
 
 function startLocalServer() {
@@ -169,6 +169,18 @@ async function main() {
         } else if (payload.action === "reportError") {
           calls.errorReports.push(payload.error || {});
           response = { ok: true, code: payload.error && payload.error.code, notified: true };
+        } else if (payload.action === "supportChatStart") {
+          calls.supportStarts++;
+          response = { ok: true, chatId: "mock-chat-" + calls.supportStarts, accessToken: "mock-private-token-" + calls.supportStarts, messages: [] };
+        } else if (payload.action === "supportChatSend") {
+          calls.supportSends++;
+          response = { ok: true, messageId: 10 + calls.supportSends };
+        } else if (payload.action === "supportChatPoll") {
+          calls.supportPolls++;
+          response = { ok: true, cursor: 2, messages: Number(payload.after) < 2 ? [{ id: 2, sender: "support", text: "Mock support reply" }] : [] };
+        } else if (payload.action === "supportChatCancel") {
+          calls.supportCancels++;
+          response = { ok: true, closed: true };
         } else {
           calls.submissions++;
           response = { ok: true, updated: false };
@@ -192,13 +204,43 @@ async function main() {
     await pageCdp.send("Page.enable");
     await pageCdp.send("Runtime.enable");
     await pageCdp.send("DOM.enable");
-    await pageCdp.send("Fetch.enable", { patterns: [{ urlPattern: "https://script.google.com/macros/s/*", requestStage: "Request" }] });
+    await pageCdp.send("Fetch.enable", { patterns: [
+      { urlPattern: "https://script.google.com/macros/s/*", requestStage: "Request" },
+      { urlPattern: "https://miyo.khuukhoidanh.workers.dev/*", requestStage: "Request" }
+    ] });
 
     const local = `http://127.0.0.1:${sitePort}`;
 
     // Admin access: wrong code stays on page; mock correct code opens the gated MIYO page.
     await pageCdp.send("Page.navigate", { url: local + "/neededaccess/" });
     await waitFor(pageCdp, `document.readyState === 'complete' && !!document.querySelector('#adminForm')`, "admin page scripts");
+    assert.equal(await evaluate(pageCdp, `!!document.querySelector('[data-miyo-support-chat]')`), true);
+    await click(pageCdp, ".miyo-chat-launcher");
+    await click(pageCdp, "[data-chat-start]");
+    await waitFor(pageCdp, `!document.querySelector('[data-chat-conversation]').hidden`, "support conversation started");
+    await waitFor(pageCdp, `!document.querySelector('#miyo-chat-input').disabled`, "initial chat history finished loading");
+    await fill(pageCdp, "#miyo-chat-input", "Mock visitor question");
+    await evaluate(pageCdp, `document.querySelector('#miyo-chat-input').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))`);
+    await waitFor(pageCdp, `document.querySelector('.miyo-chat-messages').textContent.includes('Mock visitor question') && document.querySelector('#miyo-chat-input').value === ''`, "optimistic message displayed immediately by Enter");
+    await waitFor(pageCdp, `document.querySelector('.miyo-chat-messages').textContent.includes('Mock support reply')`, "mock Telegram response displayed");
+    await waitFor(pageCdp, `!document.querySelector('[data-chat-send]').disabled`, "support message send finished");
+    await fill(pageCdp, "#miyo-chat-input", "Mouse send test");
+    await click(pageCdp, "[data-chat-send]");
+    await waitFor(pageCdp, `document.querySelector('.miyo-chat-messages').textContent.includes('Mouse send test') && document.querySelector('#miyo-chat-input').value === ''`, "optimistic message displayed immediately by clicking send");
+    await waitFor(pageCdp, `!document.querySelector('[data-chat-send]').disabled`, "mouse send finished");
+    await click(pageCdp, "[data-chat-cancel]");
+    assert.equal(await evaluate(pageCdp, `!document.querySelector('[data-chat-modal]').hidden`), true, "end-chat action opens the custom modal");
+    assert.equal(calls.supportCancels, 0, "chat remains open until modal confirmation");
+    await click(pageCdp, "[data-chat-confirm]");
+    await waitFor(pageCdp, `!document.querySelector('[data-chat-ended]').hidden`, "chat cancelled");
+    assert.equal(calls.supportStarts, 1);
+    assert.equal(calls.supportSends, 2);
+    assert.equal(calls.supportCancels, 1);
+    await click(pageCdp, "[data-chat-new]");
+    await waitFor(pageCdp, `!document.querySelector('[data-chat-conversation]').hidden`, "new chat after cancellation");
+    assert.equal(calls.supportStarts, 2, "a cancelled conversation must be replaced with a new chat");
+    resultLines.push("PASS: support chat starts a private conversation, sends/receives mocked messages, closes, and requires a new conversation");
+
     await click(pageCdp, "#adminToggle");
     await waitFor(pageCdp, `!document.querySelector('#adminForm').hidden`, "admin form open");
     await fill(pageCdp, "#adminCode", "mock-wrong");
