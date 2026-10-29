@@ -99,7 +99,7 @@ $(function () {
   /* ---------- 2. DANH SÁCH LỰA CHỌN ---------- */
   var OPTIONS = {
     roles:     ["Teacher", "Interpreter", "Student"],
-    gender:    ["Male", "Female"],
+    gender:    ["Male", "Female", "Other"],
     zodiac:    ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"],
     hobbies:   ["Music", "Drawing", "Reading", "Gaming", "Sports", "Photography", "Cooking", "Travel", "Movies", "Dancing", "Tech", "Fashion"],
     foods:     ["Hot Pot", "BBQ / Grilled Meat", "Noodles", "Rice Dishes", "Dumplings", "Fried Chicken", "Sushi", "Curry", "Taiwanese Street Food", "Western Food", "Desserts", "Bubble Tea"],

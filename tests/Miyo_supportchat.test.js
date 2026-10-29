@@ -29,6 +29,15 @@ test("support chat backend parses and enforces the planned lifecycle configurati
   assert.match(code, /everyHours\(1\)/);
 });
 
+test("the application supports Other gender and places the Gender sheet column after Nickname", () => {
+  const form = read("applications/script.js");
+  const code = read("Code.gs");
+  assert.match(form, /gender:\s*\["Male", "Female", "Other"\]/);
+  assert.match(code, /\["Male", "Female", "Other"\]/);
+  assert.match(code, /genderColumn !== nicknameColumn \+ 1/);
+  assert.match(code, /sheet\.moveColumns\(/);
+});
+
 test("support chat messages are escaped for Telegram and rendered as text in the browser", () => {
   const context = {};
   vm.createContext(context);

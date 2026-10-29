@@ -9,8 +9,8 @@ var HEADERS = [
   "Timestamp",
   "Full name",
   "Nickname",
-  "Role",
   "Gender",
+  "Role",
   "Position",
   "Class",
   "Zodiac sign",
@@ -747,9 +747,18 @@ function ensureResponseHeaders(sheet) {
     sheet.getRange(1, codeColumn + 1).setValue("code");
     headers[codeColumn] = "code";
   }
-  if (findHeaderColumn(headers.map(normalizeHeader), ["gender", "sex"]) < 0) {
+  var normalizedHeaders = headers.map(normalizeHeader);
+  var genderColumn = findHeaderColumn(normalizedHeaders, ["gender", "sex"]);
+  if (genderColumn < 0) {
     headers.push("Gender");
     sheet.getRange(1, headers.length).setValue("Gender");
+    genderColumn = headers.length - 1;
+    normalizedHeaders.push("gender");
+  }
+  var nicknameColumn = findHeaderColumn(normalizedHeaders, ["nickname", "nick name", "nick"]);
+  if (nicknameColumn >= 0 && genderColumn !== nicknameColumn + 1) {
+    sheet.moveColumns(sheet.getRange(1, genderColumn + 1, sheet.getMaxRows()), nicknameColumn + 2);
+    headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
   }
   return headers.map(normalizeHeader);
 }
@@ -816,7 +825,7 @@ function validateSubmission(data) {
   if (!data || !data.zodiac) missingFields.push("zodiac");
   if (!data || !data.color) missingFields.push("color");
   if (missingFields.length) throw new Error("Some required fields are missing: " + missingFields.join(", ") + ".");
-  if (["Male", "Female"].indexOf(data.gender) < 0) throw new Error("Please select Male or Female.");
+  if (["Male", "Female", "Other"].indexOf(data.gender) < 0) throw new Error("Please select Male, Female, or Other.");
   if (!Array.isArray(data.hobbies) || data.hobbies.length === 0) {
     throw new Error("At least one interest is required.");
   }
