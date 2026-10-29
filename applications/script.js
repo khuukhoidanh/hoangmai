@@ -6,7 +6,6 @@
 $(function () {
 
   var language = "en";
-  try { language = localStorage.getItem("miyo-language") === "vi" ? "vi" : "en"; } catch (storageError) {}
   var translations = {
     "MAKE IT YOURS · HANOI × KAOHSIUNG 2026": "MAKE IT YOURS · HÀ NỘI × CAO HÙNG 2026",
     "Student access": "Quyền truy cập học sinh", "Enter your personal access code. If it does not work, contact the developer on Zalo: 0335695572.": "Nhập mã truy cập cá nhân. Nếu mã không hoạt động, liên hệ dev qua Zalo: 0335695572.",
